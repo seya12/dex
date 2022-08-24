@@ -1,24 +1,62 @@
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import { ethers } from "ethers";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 
+//TODO: Listen on change of user account -> refetch Network and provider details
+
 const Home = () => {
   const { etherProvider, signer, setSigner } = useContext(ApplicationContext);
-  const [balance, setBalance] = useState(0);
+
+  const [user, setUser] = useState({
+    publicKey: "",
+    balance: 0,
+  });
+  const [network, setNetwork] = useState({
+    id: 0,
+    name: "",
+    blockNumber: 0,
+  });
+
+  useEffect(() => {
+    async function fetchNetwork() {
+      if (!etherProvider) {
+        return;
+      }
+      let network = await etherProvider.getNetwork();
+      let blockNumber = await etherProvider.getBlockNumber();
+      setNetwork({
+        id: network.chainId,
+        name: network.name,
+        blockNumber: blockNumber,
+      });
+    }
+    fetchNetwork();
+  }, [etherProvider]);
 
   const connect = async () => {
     const accounts = await etherProvider.send("eth_requestAccounts", []);
     setSigner(etherProvider.getSigner());
-
     let balance = await etherProvider.getBalance(accounts[0]);
-    setBalance(ethers.utils.formatEther(balance));
+    balance = ethers.utils.formatEther(balance);
+    setUser({
+      publicKey: accounts[0],
+      balance: balance.toString(),
+    });
   };
 
   return (
     <>
+      {etherProvider && (
+        <>
+          <h2>Network infos</h2>
+          <p>Network ID: {network.id}</p>
+          <p>Network Name: {network.name}</p>
+          <p>Block Number: {network.blockNumber}</p>
+        </>
+      )}
       {!etherProvider ? (
         <Alert variant="danger">Please install Metamask!</Alert>
       ) : (
@@ -28,15 +66,9 @@ const Home = () => {
         </>
       )}
 
-      <h1>Balance</h1>
-      <span>{balance && balance.toString()} ETH</span>
-      {etherProvider && (
-        <>
-          <h2>Network infos:</h2>
-          <p>Network ID:</p>
-          <p>Block Number</p>
-        </>
-      )}
+      <h1>User Infos:</h1>
+      <p>Balance: {user.balance} ETH</p>
+      <p>Public Key: {user.publicKey}</p>
     </>
   );
 };

@@ -9,22 +9,20 @@ export const ContextProvider = ({ children }) => {
   const [etherProvider, setEtherProvider] = useState();
   const [signer, setSigner] = useState();
 
-  const initializeProvider = () => {
-    if (!window.ethereum) {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    setEtherProvider(provider);
-  };
-
   useEffect(() => {
+    const initializeProvider = () => {
+      if (!window.ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      setEtherProvider(provider);
+    };
+
     initializeProvider();
   }, []);
 
   return (
-    <ApplicationContext.Provider
-      value={{ etherProvider, initializeProvider, signer, setSigner }}
-    >
+    <ApplicationContext.Provider value={{ etherProvider, signer, setSigner }}>
       {children}
     </ApplicationContext.Provider>
   );
