@@ -8,6 +8,10 @@ export const ApplicationContext = createContext();
 export const ContextProvider = ({ children }) => {
   const [etherProvider, setEtherProvider] = useState();
   const [signer, setSigner] = useState();
+  const [user, setUser] = useState({
+    publicKey: "",
+    balance: 0,
+  });
 
   useEffect(() => {
     const initializeProvider = () => {
@@ -22,7 +26,9 @@ export const ContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <ApplicationContext.Provider value={{ etherProvider, signer, setSigner }}>
+    <ApplicationContext.Provider
+      value={{ etherProvider, signer, setSigner, user, setUser }}
+    >
       {children}
     </ApplicationContext.Provider>
   );

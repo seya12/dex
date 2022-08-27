@@ -3,23 +3,29 @@ TODO: Form with input and submit button
 make sure signer is available, make transaction, listen for event
 */
 
+import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 
 const Send = () => {
-  const { signer } = useContext(ApplicationContext);
+  const { etherProvider, signer, user } = useContext(ApplicationContext);
   const [receiver, setReceiver] = useState("");
   const [amount, setAmount] = useState(0);
 
   const sendTransaction = async (event) => {
     event.preventDefault();
-    console.log(await signer.getAddress());
 
     //TODO: Finish sending
     const tx = {
-      from: "",
+      from: user.publicKey,
+      to: receiver,
+      value: utils.parseEther(amount),
     };
 
+    const trans = await signer.sendTransaction(tx);
+    console.log("Sent Transaction... " + trans);
+    await etherProvider.waitForTransaction(trans.hash);
+    console.log("Transaction finished!");
     setReceiver("");
     setAmount(0);
   };

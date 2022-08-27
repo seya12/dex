@@ -8,12 +8,9 @@ import { ApplicationContext } from "../ApplicationContext";
 //TODO: Listen on change of user account -> refetch Network and provider details
 //TODO: Use Effect on User infos in case of tab switch
 const Home = () => {
-  const { etherProvider, signer, setSigner } = useContext(ApplicationContext);
+  const { etherProvider, signer, setSigner, user, setUser } =
+    useContext(ApplicationContext);
 
-  const [user, setUser] = useState({
-    publicKey: "",
-    balance: 0,
-  });
   const [network, setNetwork] = useState({
     id: 0,
     name: "",
@@ -27,12 +24,14 @@ const Home = () => {
       }
       let network = await etherProvider.getNetwork();
       let blockNumber = await etherProvider.getBlockNumber();
+      console.log(`blocknumber: ${blockNumber}`);
       setNetwork({
         id: network.chainId,
         name: network.name,
         blockNumber: blockNumber,
       });
     }
+    console.log("use");
     fetchNetwork();
   }, [etherProvider]);
 
