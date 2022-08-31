@@ -5,7 +5,7 @@ pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 import "./IERC20.sol";
 
-abstract contract Token is IERC20 {
+contract Token is IERC20 {
     string private _name;
     string private _symbol;
 
@@ -39,11 +39,49 @@ abstract contract Token is IERC20 {
         return _symbol;
     }
 
+    function decimals() public view override returns (uint) {
+        return _decimals;
+    }
+
     function totalSupply() public view override returns (uint) {
         return _totalSupply;
     }
 
-    function decimals() public view override returns (uint) {
-        return _decimals;
+    function balanceOf(address account) public view override returns (uint) {
+        return 0;
+    }
+
+    function transfer(address recipient, uint amount)
+        public
+        view
+        override
+        returns (bool)
+    {
+        return true;
+    }
+
+    function allowance(address owner, address spender)
+        public
+        view
+        override
+        returns (uint)
+    {
+        return 0;
+    }
+
+    function approve(address spender, uint amount)
+        public
+        override
+        returns (bool)
+    {
+        return true;
+    }
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint amount
+    ) public view override returns (bool) {
+        return true;
     }
 }
