@@ -5,15 +5,18 @@ OR
 unique swap contract with owner rights, only I can make the swaps?
 */
 
+import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../ApplicationContext";
+// import Token1 from "../../../backend/artifacts/contracts/Token.sol/Token.json";
+import Token1 from "./backend/artifacts/contracts/Token.sol/Token.json";
 
 const Token = () => {
-  const { signer } = useContext(ApplicationContext);
+  const { etherProvider, signer } = useContext(ApplicationContext);
   const [amount, setAmount] = useState(0);
   const [name, setName] = useState("");
 
-  const sendTransaction = async (event) => {
+  const createToken = async (event) => {
     event.preventDefault();
     console.log(await signer.getAddress());
 
@@ -25,10 +28,21 @@ const Token = () => {
     setName("");
     setAmount(0);
   };
+
+  const click = async () => {
+    const token = new ethers.Contract(
+      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      Token1.abi,
+      etherProvider
+    );
+    console.log(token.address);
+  };
+
   return (
     <>
+      <button onClick={click}>Click</button>
       <h1>Create new Token</h1>
-      <form onSubmit={sendTransaction}>
+      <form onSubmit={createToken}>
         <div>
           <label htmlFor="name">Name:</label>
           <input
