@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
-import TradeAbi from "../artifacts/contracts/Trade.sol/Trade.json";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
@@ -31,15 +30,19 @@ const Exchange = () => {
 
   const click = async () => {
     const trades = new ethers.Contract(
-      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       TradesAbi.abi,
       etherProvider
     );
     console.log(trades);
-    const test = await trades.test();
-    console.log(test);
-    const t = await trades.getTrades();
+    const t = await trades.getArr();
     console.log(t);
+    const structs = await trades.getStruct();
+    console.log(structs);
+    console.log(structs[0]);
+    const s = structs[0];
+    console.log(s.text);
+    console.log(s[1]);
   };
 
   return (
