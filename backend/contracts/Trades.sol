@@ -10,8 +10,8 @@ contract Trades {
     }
 
     struct Trade {
-        TradePartner partnerOne;
-        TradePartner partnerTwo;
+        TradePartner seller;
+        TradePartner buyer;
         bool open;
     }
 

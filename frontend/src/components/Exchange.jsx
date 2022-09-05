@@ -4,39 +4,86 @@ TODO:
 - write contract address in config file and fetch it from there
 - 
 */
+import Table from "react-bootstrap/Table";
 import { ethers } from "ethers";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
+  const CONTRACT_ADDRESS = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
 
   const [trades, setTrades] = useState([
     {
-      tokenName: "DefaultName",
-      symbol: "DFT",
-      offer: "",
-      for: "",
-    },
-    {
-      tokenName: "DefaultName",
-      symbol: "DFT",
-      offer: "",
-      for: "",
+      seller: {
+        participant: "",
+        token: "",
+        amount: 0,
+      },
+      buyer: {
+        participant: "",
+        token: "",
+        amount: 0,
+      },
+      open: true,
     },
   ]);
 
-  const showTrades = trades.map((trade) => {
-    return <p>{trade.tokenName}</p>;
-  });
+  useEffect(() => {
+    async function fetchContract() {
+      if (!etherProvider) {
+        return;
+      }
+      const trades = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        TradesAbi.abi,
+        etherProvider
+      );
+
+      const t = await trades.getTrades();
+      setTrades(t);
+      console.log("set trades");
+      console.log(t);
+    }
+    console.log("test");
+    fetchContract();
+  }, [etherProvider]);
+
+  const showTradess = () => {
+    return (
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Offer Token</th>
+            <th>Offer Amount</th>
+            <th>For Token</th>
+            <th>For Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {trades.map((trade) => {
+            console.log(trade.seller.amount);
+            return (
+              <tr>
+                <td>{trade.seller.token}</td>
+                <td>{trade.seller.amount.toString()}</td>
+                <td>{trade.buyer.token}</td>
+                <td>{trade.buyer.amount.toString()}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    );
+  };
 
   const click = async () => {
-    const trades = new ethers.Contract(
-      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      TradesAbi.abi,
-      signer
-    );
+    if (!signer) {
+      console.log("signer not set... return");
+      return;
+    }
+    const trades = new ethers.Contract(CONTRACT_ADDRESS, TradesAbi.abi, signer);
 
     const t = await trades.getTrades();
     console.log(t);
@@ -53,8 +100,8 @@ const Exchange = () => {
       },
     ];
     const trade = {
-      partnerOne: partners[0],
-      partnerTwo: partners[1],
+      seller: partners[0],
+      buyer: partners[1],
       open: true,
     };
     const trans = await trades.addTrade(trade);
@@ -74,14 +121,17 @@ const Exchange = () => {
     // console.log(s[1]);
   };
 
+  const showClosedTrades = async () => {};
+
   return (
     <>
-      <button onClick={click}>Click</button>
-
       <h1>Exchange</h1>
       <h2>Available Trades:</h2>
-      <section>{showTrades}</section>
+      <section>{showTradess()}</section>
+      <h2>Past Trades</h2>
+      <section>{showClosedTrades}</section>
       <h2>Offer Trade:</h2>
+      <button onClick={click}>Click</button>
     </>
   );
 };
