@@ -9,7 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { ethers } from "ethers";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
 
@@ -34,25 +34,26 @@ const Exchange = () => {
     },
   ]);
 
-  useEffect(() => {
-    async function fetchContract() {
-      if (!etherProvider) {
-        return;
-      }
-      const trades = new ethers.Contract(
-        CONTRACT_ADDRESS,
-        TradesAbi.abi,
-        etherProvider
-      );
-
-      const t = await trades.getTrades();
-      setTrades(t);
-      console.log("set trades");
-      console.log(t);
+  const fetchContract = useCallback(async () => {
+    if (!etherProvider) {
+      return;
     }
-    console.log("test");
-    fetchContract();
+    const trades = new ethers.Contract(
+      CONTRACT_ADDRESS,
+      TradesAbi.abi,
+      etherProvider
+    );
+
+    const contractTrades = await trades.getTrades();
+    setTrades(contractTrades);
+    console.log(contractTrades);
+    console.log("trades set from solidity...");
   }, [etherProvider]);
+
+  useEffect(() => {
+    console.log("in use effect...");
+    fetchContract();
+  }, [fetchContract]);
 
   const showTradess = () => {
     return (
@@ -68,7 +69,6 @@ const Exchange = () => {
         </thead>
         <tbody>
           {trades.map((trade) => {
-            console.log(trade.seller.amount);
             return (
               <tr>
                 <td>{trade.seller.token}</td>
@@ -126,11 +126,37 @@ const Exchange = () => {
     setShowModal(false);
   };
 
-  const makeTrade = (e) => {
+  const makeTrade = async (e) => {
     e.preventDefault();
-    console.log(e);
     console.log(e.target.offerAmount.value);
-    // setShowModal(false);
+
+    const partners = [
+      {
+        participant: await signer.getAddress(),
+        token: e.target.offerToken.value,
+        amount: e.target.offerAmount.value,
+      },
+      {
+        participant: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        token: e.target.forToken.value,
+        amount: e.target.forAmount.value,
+      },
+    ];
+    const trade = {
+      seller: partners[0],
+      buyer: partners[1],
+      open: true,
+    };
+    const trades = new ethers.Contract(CONTRACT_ADDRESS, TradesAbi.abi, signer);
+
+    const tx = await trades.addTrade(trade);
+    console.log("w11111hä");
+
+    const confirmedTx = await tx.wait();
+    console.log("confirmed");
+
+    fetchContract();
+    setShowModal(false);
   };
 
   return (
@@ -140,7 +166,9 @@ const Exchange = () => {
       <section>{showTradess()}</section>
       <h2>Past Trades</h2>
       <section>{showClosedTrades}</section>
-      <button onClick={() => setShowModal(true)}>Offer Trade</button>
+      <button onClick={() => setShowModal(true)} disabled={!signer}>
+        Offer Trade
+      </button>
 
       <Modal show={showModal} onHide={closeMakeTrade}>
         <Form onSubmit={makeTrade}>
