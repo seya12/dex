@@ -5,6 +5,9 @@ TODO:
 - 
 */
 import Table from "react-bootstrap/Table";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { ethers } from "ethers";
 import { useContext, useState, useEffect } from "react";
 import { ApplicationContext } from "../ApplicationContext";
@@ -12,8 +15,9 @@ import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
-  const CONTRACT_ADDRESS = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
+  const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
+  const [showModal, setShowModal] = useState(false);
   const [trades, setTrades] = useState([
     {
       seller: {
@@ -59,6 +63,7 @@ const Exchange = () => {
             <th>Offer Amount</th>
             <th>For Token</th>
             <th>For Amount</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -70,6 +75,9 @@ const Exchange = () => {
                 <td>{trade.seller.amount.toString()}</td>
                 <td>{trade.buyer.token}</td>
                 <td>{trade.buyer.amount.toString()}</td>
+                <td>
+                  <button>Take Trade</button>
+                </td>
               </tr>
             );
           })}
@@ -110,18 +118,20 @@ const Exchange = () => {
     console.log(confirmedTx);
     const abc = await trades.getTrades();
     console.log(abc);
-    // console.log(trades);
-    // const t = await trades.getArr();
-    // console.log(t);
-    // const structs = await trades.getStruct();
-    // console.log(structs);
-    // console.log(structs[0]);
-    // const s = structs[0];
-    // console.log(s.text);
-    // console.log(s[1]);
   };
 
   const showClosedTrades = async () => {};
+
+  const closeMakeTrade = () => {
+    setShowModal(false);
+  };
+
+  const makeTrade = (e) => {
+    e.preventDefault();
+    console.log(e);
+    console.log(e.target.offerAmount.value);
+    // setShowModal(false);
+  };
 
   return (
     <>
@@ -130,8 +140,41 @@ const Exchange = () => {
       <section>{showTradess()}</section>
       <h2>Past Trades</h2>
       <section>{showClosedTrades}</section>
-      <h2>Offer Trade:</h2>
-      <button onClick={click}>Click</button>
+      <button onClick={() => setShowModal(true)}>Offer Trade</button>
+
+      <Modal show={showModal} onHide={closeMakeTrade}>
+        <Form onSubmit={makeTrade}>
+          <Modal.Header closeButton>
+            <Modal.Title>Make Trade</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="offerToken">
+              <Form.Label>Offer Token</Form.Label>
+              <Form.Control type="text" autoFocus />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="offerAmount">
+              <Form.Label>Offer amount</Form.Label>
+              <Form.Control type="number" />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="forToken">
+              <Form.Label>For Token</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="forAmount">
+              <Form.Label>For amount</Form.Label>
+              <Form.Control type="number" />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeMakeTrade}>
+              Close
+            </Button>
+            <Button variant="primary" type="submit">
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </>
   );
 };
