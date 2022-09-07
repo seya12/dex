@@ -3,6 +3,7 @@ create new ERC20 token
 no swap function as mentioned before as ERC20 has allowances
 */
 
+import Form from "react-bootstrap/Form";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../ApplicationContext";
@@ -41,7 +42,7 @@ const Token = () => {
     <>
       <button onClick={click}>Click</button>
       <h1>Create new Token</h1>
-      <form onSubmit={createToken}>
+      <Form onSubmit={createToken}>
         <div>
           <label htmlFor="name">Name:</label>
           <input
@@ -64,7 +65,7 @@ const Token = () => {
         </div>
         {!signer && <p>Please connect on the overview page!</p>}
         <input type="submit" value="Submit" disabled={!signer}></input>
-      </form>
+      </Form>
     </>
   );
 };
