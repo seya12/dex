@@ -4,6 +4,7 @@ no swap function as mentioned before as ERC20 has allowances
 */
 
 import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../ApplicationContext";
@@ -43,28 +44,18 @@ const Token = () => {
       <button onClick={click}>Click</button>
       <h1>Create new Token</h1>
       <Form onSubmit={createToken}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            name="name"
-            id="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label htmlFor="amount">Amount:</label>
-          <input
-            name="amount"
-            id="amount"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          ></input>
-        </div>
+        <Form.Group className="mb-3" controlId="tokenName">
+          <Form.Label>Token Name:</Form.Label>
+          <Form.Control type="text" autoFocus />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="totalSupply">
+          <Form.Label>Total Supply:</Form.Label>
+          <Form.Control type="number" />
+        </Form.Group>
         {!signer && <p>Please connect on the overview page!</p>}
-        <input type="submit" value="Submit" disabled={!signer}></input>
+        <Button type="submit" disabled={!signer}>
+          Submit
+        </Button>
       </Form>
     </>
   );

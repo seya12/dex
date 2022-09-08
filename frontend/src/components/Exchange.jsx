@@ -76,7 +76,7 @@ const Exchange = () => {
                 <td>{trade.buyer.token}</td>
                 <td>{trade.buyer.amount.toString()}</td>
                 <td>
-                  <button>Take Trade</button>
+                  <Button variant="dark">Take Trade</Button>
                 </td>
               </tr>
             );
@@ -150,13 +150,10 @@ const Exchange = () => {
     const trades = new ethers.Contract(CONTRACT_ADDRESS, TradesAbi.abi, signer);
 
     const tx = await trades.addTrade(trade);
-    console.log("w11111hä");
-
-    const confirmedTx = await tx.wait();
-    console.log("confirmed");
+    setShowModal(false);
+    await tx.wait();
 
     fetchContract();
-    setShowModal(false);
   };
 
   return (
@@ -166,9 +163,9 @@ const Exchange = () => {
       <section>{showTradess()}</section>
       <h2>Past Trades</h2>
       <section>{showClosedTrades}</section>
-      <button onClick={() => setShowModal(true)} disabled={!signer}>
+      <Button onClick={() => setShowModal(true)} disabled={!signer}>
         Offer Trade
-      </button>
+      </Button>
 
       <Modal show={showModal} onHide={closeMakeTrade}>
         <Form onSubmit={makeTrade}>

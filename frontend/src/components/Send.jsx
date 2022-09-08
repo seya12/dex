@@ -2,15 +2,14 @@
 TODO: Form with input and submit button
 make sure signer is available, make transaction, listen for event
 */
-
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 
 const Send = () => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
-  const [receiver, setReceiver] = useState("");
-  const [amount, setAmount] = useState(0);
   const [txHash, setTxHash] = useState({
     hash: "",
     waiting: false,
@@ -19,6 +18,8 @@ const Send = () => {
 
   const sendTransaction = async (event) => {
     event.preventDefault();
+    const receiver = event.target.receiver.value;
+    const amount = event.target.amount.value;
 
     //TODO: Wait for mined transaction, display hash...
     const tx = {
@@ -50,37 +51,25 @@ const Send = () => {
       waiting: false,
       confirmed: true,
     });
-    setReceiver("");
-    setAmount(0);
   };
 
   return (
     <>
       <h1>Send ETH</h1>
-      <form onSubmit={sendTransaction}>
-        <div>
-          <label htmlFor="amount">Amount:</label>
-          <input
-            name="amount"
-            id="amount"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label htmlFor="receiver">To:</label>
-          <input
-            name="receiver"
-            id="receiver"
-            type="text"
-            value={receiver}
-            onChange={(e) => setReceiver(e.target.value)}
-          ></input>
-        </div>
+      <Form onSubmit={sendTransaction}>
+        <Form.Group className="mb-3" controlId="receiver">
+          <Form.Label>Receiver Public Key:</Form.Label>
+          <Form.Control type="text" autoFocus />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="amount">
+          <Form.Label>Amount to be sent:</Form.Label>
+          <Form.Control type="amount" autoFocus />
+        </Form.Group>
         {!signer && <p>Please connect on the overview page!</p>}
-        <input type="submit" value="Submit" disabled={!signer}></input>
-      </form>
+        <Button type="submit" disabled={!signer}>
+          Submit
+        </Button>
+      </Form>
       {txHash.waiting && (
         <p>Waiting for transaction to be mined{txHash.hash}</p>
       )}
