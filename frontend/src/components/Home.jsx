@@ -50,7 +50,7 @@ const Home = () => {
     <>
       {etherProvider && (
         <>
-          <h2>Network infos</h2>
+          <h1>Network infos</h1>
           <p>Network ID: {network.id}</p>
           <p>Network Name: {network.name}</p>
           <p>Block Number: {network.blockNumber}</p>
