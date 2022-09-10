@@ -1,5 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import NetworkInfo from "./NetworkInfo";
+import UserInfos from "./UserInfos";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
@@ -8,8 +10,7 @@ import { ApplicationContext } from "../ApplicationContext";
 //TODO: Listen on change of user account -> refetch Network and provider details
 //TODO: Use Effect on User infos in case of tab switch
 const Home = () => {
-  const { etherProvider, signer, setSigner, user, setUser } =
-    useContext(ApplicationContext);
+  const { etherProvider, user } = useContext(ApplicationContext);
 
   const [network, setNetwork] = useState({
     id: 0,
@@ -35,39 +36,17 @@ const Home = () => {
     fetchNetwork();
   }, [etherProvider]);
 
-  const connect = async () => {
-    const accounts = await etherProvider.send("eth_requestAccounts", []);
-    setSigner(etherProvider.getSigner());
-    let balance = await etherProvider.getBalance(accounts[0]);
-    balance = ethers.utils.formatEther(balance);
-    setUser({
-      publicKey: accounts[0],
-      balance: balance.toString(),
-    });
-  };
-
   return (
     <>
+      {!etherProvider && (
+        <Alert variant="danger">Please install Metamask!</Alert>
+      )}
       {etherProvider && (
         <>
-          <h1>Network infos</h1>
-          <p>Network ID: {network.id}</p>
-          <p>Network Name: {network.name}</p>
-          <p>Block Number: {network.blockNumber}</p>
+          <NetworkInfo {...network} />
+          <UserInfos {...user} />
         </>
       )}
-      {!etherProvider ? (
-        <Alert variant="danger">Please install Metamask!</Alert>
-      ) : (
-        <>
-          <Button onClick={connect}>Connect</Button>{" "}
-          {signer !== undefined ? "Connected" : "Not Connected"}
-        </>
-      )}
-
-      <h1>User Infos:</h1>
-      <p>Balance: {user.balance} ETH</p>
-      <p>Public Key: {user.publicKey}</p>
     </>
   );
 };
