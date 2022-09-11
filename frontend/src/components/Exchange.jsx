@@ -7,16 +7,19 @@ TODO:
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+
 import { ethers } from "ethers";
 import { useContext, useState, useEffect, useCallback } from "react";
+
 import { ApplicationContext } from "../ApplicationContext";
 import Trades from "./Trades";
+import TokensAbi from "../artifacts/contracts/Tokens.sol/Tokens.json";
 import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
   const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-
+  const { availableTokens, setAvailableTokens } = useState();
   const [showModal, setShowModal] = useState(false);
   const [trades, setTrades] = useState([
     {
@@ -55,6 +58,18 @@ const Exchange = () => {
     fetchContract();
   }, [fetchContract]);
 
+  useEffect(() => {
+    async function fetchTokens() {
+      const tokens = new ethers.Contract(
+        "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+        TokensAbi.abi,
+        signer
+      );
+      const tokenNames = await tokens.getTokenNames();
+      console.log(`Names: ${tokenNames}`);
+    }
+    fetchTokens();
+  });
   const showClosedTrades = async () => {};
 
   const closeMakeTrade = () => {

@@ -63,7 +63,7 @@ const Send = () => {
         </Form.Group>
         <Form.Group className="mb-3" controlId="amount">
           <Form.Label>Amount to be sent:</Form.Label>
-          <Form.Control type="amount" autoFocus />
+          <Form.Control type="amount" />
         </Form.Group>
         {!signer && <p>Please connect on the overview page!</p>}
         <Button type="submit" disabled={!signer}>

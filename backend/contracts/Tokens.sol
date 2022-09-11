@@ -21,4 +21,15 @@ contract Tokens {
     function getTokens() external view returns (address[] memory) {
         return tokens;
     }
+
+    function getTokenNames() external view returns (string[] memory) {
+        string[] memory tokenNames = new string[](tokens.length);
+
+        for (uint i = 0; i < tokens.length; i++) {
+            Token t = Token(tokens[i]);
+            tokenNames[i] = t.name();
+        }
+
+        return tokenNames;
+    }
 }
