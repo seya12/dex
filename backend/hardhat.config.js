@@ -1,4 +1,11 @@
+const { task } = require("hardhat/config");
+
 require("@nomicfoundation/hardhat-toolbox");
+
+task("init", "Initially deploy contracts").setAction(async () => {
+  await hre.run("run", { script: "scripts/deployTrades.js" });
+  await hre.run("run", { script: "scripts/deployTokens.js" });
+});
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
