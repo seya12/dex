@@ -1,8 +1,6 @@
-import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import NetworkInfo from "./NetworkInfo";
 import UserInfos from "./UserInfos";
-import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
@@ -25,14 +23,12 @@ const Home = () => {
       }
       let network = await etherProvider.getNetwork();
       let blockNumber = await etherProvider.getBlockNumber();
-      console.log(`blocknumber: ${blockNumber}`);
       setNetwork({
         id: network.chainId,
         name: network.name,
         blockNumber: blockNumber,
       });
     }
-    console.log("use");
     fetchNetwork();
   }, [etherProvider]);
 

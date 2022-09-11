@@ -4,13 +4,13 @@ TODO:
 - write contract address in config file and fetch it from there
 - 
 */
-import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { ethers } from "ethers";
 import { useContext, useState, useEffect, useCallback } from "react";
 import { ApplicationContext } from "../ApplicationContext";
+import Trades from "./Trades";
 import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
 
 const Exchange = () => {
@@ -55,71 +55,6 @@ const Exchange = () => {
     fetchContract();
   }, [fetchContract]);
 
-  const showTradess = () => {
-    return (
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Offer Token</th>
-            <th>Offer Amount</th>
-            <th>For Token</th>
-            <th>For Amount</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {trades.map((trade) => {
-            return (
-              <tr>
-                <td>{trade.seller.token}</td>
-                <td>{trade.seller.amount.toString()}</td>
-                <td>{trade.buyer.token}</td>
-                <td>{trade.buyer.amount.toString()}</td>
-                <td>
-                  <Button variant="dark">Take Trade</Button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-    );
-  };
-
-  const click = async () => {
-    if (!signer) {
-      console.log("signer not set... return");
-      return;
-    }
-    const trades = new ethers.Contract(CONTRACT_ADDRESS, TradesAbi.abi, signer);
-
-    const t = await trades.getTrades();
-    console.log(t);
-    const partners = [
-      {
-        participant: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        token: "TEST",
-        amount: 1,
-      },
-      {
-        participant: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        token: "COUNTER",
-        amount: 10,
-      },
-    ];
-    const trade = {
-      seller: partners[0],
-      buyer: partners[1],
-      open: true,
-    };
-    const trans = await trades.addTrade(trade);
-    console.log(trans);
-    const confirmedTx = await trans.wait();
-    console.log(confirmedTx);
-    const abc = await trades.getTrades();
-    console.log(abc);
-  };
-
   const showClosedTrades = async () => {};
 
   const closeMakeTrade = () => {
@@ -160,7 +95,7 @@ const Exchange = () => {
     <>
       <h1>Exchange</h1>
       <h2>Available Trades:</h2>
-      <section>{showTradess()}</section>
+      <Trades trades={trades} />
       <h2>Past Trades</h2>
       <section>{showClosedTrades}</section>
       <Button onClick={() => setShowModal(true)} disabled={!signer}>
