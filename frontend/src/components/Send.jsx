@@ -1,12 +1,13 @@
 /*
-TODO: Form with input and submit button
-make sure signer is available, make transaction, listen for event
+TODO: hint that you need to be connected with signer
+better feedback that transaction is mined / to be mined
 */
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
+import TransactionResult from "./Send/TransactionResult";
 
 const Send = () => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
@@ -14,6 +15,7 @@ const Send = () => {
     hash: "",
     waiting: false,
     confirmed: false,
+    error: false,
   });
 
   const sendTransaction = async (event) => {
@@ -21,7 +23,6 @@ const Send = () => {
     const receiver = event.target.receiver.value;
     const amount = event.target.amount.value;
 
-    //TODO: Wait for mined transaction, display hash...
     const tx = {
       from: user.publicKey,
       to: receiver,
@@ -29,27 +30,30 @@ const Send = () => {
     };
 
     let trans;
+
     try {
       trans = await signer.sendTransaction(tx);
     } catch (err) {
+      setTxHash({ ...txHash, error: true });
       console.log(err.message);
       return;
     }
-    console.log("Sent Transaction... " + trans);
+
     setTxHash({
       hash: trans.hash,
       waiting: true,
       confirmed: false,
+      error: false,
     });
 
     await etherProvider.waitForTransaction(trans.hash);
     await new Promise((resolve) => setTimeout(resolve, 10000));
 
-    console.log("Transaction finished!");
     setTxHash({
       hash: trans.hash,
       waiting: false,
       confirmed: true,
+      error: false,
     });
   };
 
@@ -70,10 +74,10 @@ const Send = () => {
           Submit
         </Button>
       </Form>
-      {txHash.waiting && (
-        <p>Waiting for transaction to be mined{txHash.hash}</p>
-      )}
-      {txHash.confirmed && <p>Transaction mined! Hash: {txHash.hash}</p>}
+      <TransactionResult
+        txHash={txHash}
+        key={txHash.hash + txHash.waiting + txHash.confirmed + txHash.error}
+      />
     </>
   );
 };
