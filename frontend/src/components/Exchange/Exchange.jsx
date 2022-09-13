@@ -62,7 +62,7 @@ const Exchange = () => {
       const tokens = new ethers.Contract(
         "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
         TokensAbi.abi,
-        signer
+        etherProvider
       );
       const tokenNames = await tokens.getTokenNames();
       console.log(`Names: ${tokenNames}`);
