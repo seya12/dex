@@ -8,6 +8,7 @@ import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import TransactionResult from "./TransactionResult";
+import TransactionHandler from "../TransactionHandler";
 
 const Send = () => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
@@ -29,32 +30,9 @@ const Send = () => {
       value: utils.parseEther(amount),
     };
 
-    let trans;
-
-    try {
-      trans = await signer.sendTransaction(tx);
-    } catch (err) {
-      setTxHash({ ...txHash, error: true });
-      console.log(err.message);
-      return;
-    }
-
-    setTxHash({
-      hash: trans.hash,
-      waiting: true,
-      confirmed: false,
-      error: false,
-    });
-
-    await etherProvider.waitForTransaction(trans.hash);
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-
-    setTxHash({
-      hash: trans.hash,
-      waiting: false,
-      confirmed: true,
-      error: false,
-    });
+    let transHandler = new TransactionHandler(etherProvider, setTxHash);
+    await transHandler.execute(() => signer.sendTransaction(tx));
+    event.target.reset();
   };
 
   return (
@@ -66,7 +44,7 @@ const Send = () => {
           <Form.Control type="text" autoFocus />
         </Form.Group>
         <Form.Group className="mb-3" controlId="amount">
-          <Form.Label>Amount to be sent:</Form.Label>
+          <Form.Label>ETH to be sent:</Form.Label>
           <Form.Control type="amount" />
         </Form.Group>
         {!signer && <p>Please connect on the overview page!</p>}

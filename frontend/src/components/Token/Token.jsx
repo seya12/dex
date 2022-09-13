@@ -8,12 +8,18 @@ import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
-import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
-import { useEffect } from "react";
+import TransactionHandler from "../TransactionHandler";
+import TransactionResult from "../Send/TransactionResult";
 
 const Token = () => {
-  const { signer } = useContext(ApplicationContext);
+  const { etherProvider, signer } = useContext(ApplicationContext);
+  const [txHash, setTxHash] = useState({
+    hash: "",
+    waiting: false,
+    confirmed: false,
+    error: false,
+  });
 
   const createToken = async (event) => {
     event.preventDefault();
@@ -23,21 +29,21 @@ const Token = () => {
       TokensAbi.abi,
       signer
     );
-    const create = await tokens.createToken(
-      params.name.value,
-      params.symbol.value,
-      params.totalSupply.value,
-      params.decimals.value
+    let transHandler = new TransactionHandler(etherProvider, setTxHash);
+    await transHandler.execute(() =>
+      tokens.createToken(
+        params.name.value,
+        params.symbol.value,
+        params.totalSupply.value,
+        params.decimals.value
+      )
     );
-    await create.wait();
-    console.log("finito");
-    const tokenAddresses = await tokens.getTokens();
-    console.log(tokenAddresses);
+    event.target.reset();
   };
 
   return (
     <>
-      <h1>Create new Token</h1>
+      <h1>Create a new Token</h1>
       <Form onSubmit={createToken}>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Token Name:</Form.Label>
@@ -61,6 +67,10 @@ const Token = () => {
           Submit
         </Button>
       </Form>
+      <TransactionResult
+        txHash={txHash}
+        key={txHash.hash + txHash.waiting + txHash.confirmed + txHash.error}
+      />
     </>
   );
 };
