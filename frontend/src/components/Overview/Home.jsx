@@ -3,7 +3,7 @@ import NetworkInfo from "./NetworkInfo";
 import UserInfos from "./UserInfos";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
-import { ApplicationContext } from "../ApplicationContext";
+import { ApplicationContext } from "../../ApplicationContext";
 
 //TODO: Listen on change of user account -> refetch Network and provider details
 //TODO: Use Effect on User infos in case of tab switch

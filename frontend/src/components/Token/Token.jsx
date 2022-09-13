@@ -1,15 +1,15 @@
 /*
-create new ERC20 token
-no swap function as mentioned before as ERC20 has allowances
+Feedback that token has been created
+Maybe a list with previously created tokens
 */
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
-import { ApplicationContext } from "../ApplicationContext";
-import TokenAbi from "../artifacts/contracts/Token.sol/Token.json";
-import TokensAbi from "../artifacts/contracts/Tokens.sol/Tokens.json";
+import { ApplicationContext } from "../../ApplicationContext";
+import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
+import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import { useEffect } from "react";
 
 const Token = () => {

@@ -6,8 +6,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { utils } from "ethers";
 import { useState, useContext } from "react";
-import { ApplicationContext } from "../ApplicationContext";
-import TransactionResult from "./Send/TransactionResult";
+import { ApplicationContext } from "../../ApplicationContext";
+import TransactionResult from "./TransactionResult";
 
 const Send = () => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);

@@ -1,9 +1,9 @@
 import NavigationBar from "./components/NavigationBar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
-import Send from "./components/Send";
-import Token from "./components/Token";
-import Exchange from "./components/Exchange";
+import Home from "./components/Overview/Home";
+import Send from "./components/Send/Send";
+import Token from "./components/Token/Token";
+import Exchange from "./components/Exchange/Exchange";
 
 const App = () => {
   return (

@@ -2,7 +2,6 @@
 TODO: 
 - call smart contract and make exchange
 - write contract address in config file and fetch it from there
-- 
 */
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -11,10 +10,10 @@ import Form from "react-bootstrap/Form";
 import { ethers } from "ethers";
 import { useContext, useState, useEffect, useCallback } from "react";
 
-import { ApplicationContext } from "../ApplicationContext";
+import { ApplicationContext } from "../../ApplicationContext";
 import Trades from "./Trades";
-import TokensAbi from "../artifacts/contracts/Tokens.sol/Tokens.json";
-import TradesAbi from "../artifacts/contracts/Trades.sol/Trades.json";
+import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
+import TradesAbi from "../../artifacts/contracts/Trades.sol/Trades.json";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
