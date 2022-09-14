@@ -33,6 +33,21 @@ contract Tokens {
         return tokenNames;
     }
 
+    function getTokenMappings()
+        external
+        view
+        returns (address[] memory, string[] memory)
+    {
+        string[] memory tokenNames = new string[](tokens.length);
+
+        for (uint i = 0; i < tokens.length; i++) {
+            Token t = Token(tokens[i]);
+            tokenNames[i] = t.name();
+        }
+
+        return (tokens, tokenNames);
+    }
+
     receive() external payable {} // to support receiving ETH by default
 
     fallback() external payable {}

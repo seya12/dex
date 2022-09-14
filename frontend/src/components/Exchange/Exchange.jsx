@@ -17,7 +17,7 @@ import TradeModal from "./TradeModal";
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
   const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const { availableTokens, setAvailableTokens } = useState();
+  const [availableTokens, setAvailableTokens] = useState();
   const [showModal, setShowModal] = useState(false);
   const [trades, setTrades] = useState([
     {
@@ -65,9 +65,19 @@ const Exchange = () => {
       );
       const tokenNames = await tokens.getTokenNames();
       console.log(`Names: ${tokenNames}`);
+      const t = await tokens.getTokenMappings();
+      const addresses = t[0];
+      const names = t[1];
+      const map = new Map();
+      for (let i = 0; i < addresses?.length; i++) {
+        map.set(addresses[i], names[i]);
+      }
+      console.log(map);
+      setAvailableTokens(map);
     }
     fetchTokens();
-  });
+  }, [etherProvider]);
+
   const showClosedTrades = async () => {};
 
   const makeTrade = async (e) => {
@@ -115,6 +125,7 @@ const Exchange = () => {
         <TradeModal
           closeModal={() => setShowModal(false)}
           makeTrade={makeTrade}
+          tokens={availableTokens}
         />
       )}
     </>

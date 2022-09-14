@@ -4,7 +4,16 @@ import Form from "react-bootstrap/Form";
 
 import React from "react";
 
-const TradeModal = ({ closeModal, makeTrade }) => {
+const TradeModal = ({ closeModal, makeTrade, tokens }) => {
+  const tokenOptions = () =>
+    [...tokens].map(([key, value]) => {
+      return (
+        <option key={key} value={key}>
+          {value}
+        </option>
+      );
+    });
+
   return (
     <>
       <Modal show="true" onHide={closeModal}>
@@ -15,7 +24,7 @@ const TradeModal = ({ closeModal, makeTrade }) => {
           <Modal.Body>
             <Form.Group className="mb-3" controlId="offerToken">
               <Form.Label>Offer Token</Form.Label>
-              <Form.Control type="text" autoFocus />
+              <Form.Select>{tokenOptions()}</Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="offerAmount">
               <Form.Label>Offer amount</Form.Label>
@@ -23,7 +32,7 @@ const TradeModal = ({ closeModal, makeTrade }) => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="forToken">
               <Form.Label>For Token</Form.Label>
-              <Form.Control type="text" />
+              <Form.Select>{tokenOptions()}</Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="forAmount">
               <Form.Label>For amount</Form.Label>
