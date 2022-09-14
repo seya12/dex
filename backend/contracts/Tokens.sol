@@ -32,4 +32,8 @@ contract Tokens {
 
         return tokenNames;
     }
+
+    receive() external payable {} // to support receiving ETH by default
+
+    fallback() external payable {}
 }
