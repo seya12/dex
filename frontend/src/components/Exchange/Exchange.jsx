@@ -3,9 +3,7 @@ TODO:
 - call smart contract and make exchange
 - write contract address in config file and fetch it from there
 */
-import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 
 import { ethers } from "ethers";
 import { useContext, useState, useEffect, useCallback } from "react";
@@ -14,6 +12,7 @@ import { ApplicationContext } from "../../ApplicationContext";
 import Trades from "./Trades";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import TradesAbi from "../../artifacts/contracts/Trades.sol/Trades.json";
+import TradeModal from "./TradeModal";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
@@ -71,10 +70,6 @@ const Exchange = () => {
   });
   const showClosedTrades = async () => {};
 
-  const closeMakeTrade = () => {
-    setShowModal(false);
-  };
-
   const makeTrade = async (e) => {
     e.preventDefault();
     console.log(e.target.offerAmount.value);
@@ -116,39 +111,12 @@ const Exchange = () => {
         Offer Trade
       </Button>
 
-      <Modal show={showModal} onHide={closeMakeTrade}>
-        <Form onSubmit={makeTrade}>
-          <Modal.Header closeButton>
-            <Modal.Title>Make Trade</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group className="mb-3" controlId="offerToken">
-              <Form.Label>Offer Token</Form.Label>
-              <Form.Control type="text" autoFocus />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="offerAmount">
-              <Form.Label>Offer amount</Form.Label>
-              <Form.Control type="number" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="forToken">
-              <Form.Label>For Token</Form.Label>
-              <Form.Control type="text" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="forAmount">
-              <Form.Label>For amount</Form.Label>
-              <Form.Control type="number" />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={closeMakeTrade}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+      {showModal && (
+        <TradeModal
+          closeModal={() => setShowModal(false)}
+          makeTrade={makeTrade}
+        />
+      )}
     </>
   );
 };

@@ -4,7 +4,7 @@ const InfoCard = ({ header, body }) => {
   const bodyResults = () =>
     Object.entries(body).map(([key, value]) => {
       return (
-        <p>
+        <p key={key}>
           <strong>{key}:</strong> {value}
         </p>
       );
