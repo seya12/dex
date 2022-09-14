@@ -7,8 +7,8 @@ import Form from "react-bootstrap/Form";
 import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
-import TransactionResult from "./TransactionResult";
-import TransactionHandler from "../TransactionHandler";
+import TransactionResult from "../util/TransactionResult";
+import { executeContractCall } from "../../proxies/executeContractCall";
 
 const Send = () => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
@@ -30,8 +30,9 @@ const Send = () => {
       value: utils.parseEther(amount),
     };
 
-    let transHandler = new TransactionHandler(etherProvider, setTxHash);
-    await transHandler.execute(() => signer.sendTransaction(tx));
+    const contractCall = () => signer.sendTransaction(tx);
+    await executeContractCall(contractCall, etherProvider, setTxHash);
+
     event.target.reset();
   };
 

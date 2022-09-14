@@ -9,8 +9,8 @@ import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
-import TransactionHandler from "../TransactionHandler";
-import TransactionResult from "../Send/TransactionResult";
+import TransactionResult from "../util/TransactionResult";
+import { executeContractCall } from "../../proxies/executeContractCall";
 
 const Token = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
@@ -29,20 +29,31 @@ const Token = () => {
       TokensAbi.abi,
       signer
     );
-    let transHandler = new TransactionHandler(etherProvider, setTxHash);
-    await transHandler.execute(() =>
+    const contractCall = () =>
       tokens.createToken(
         params.name.value,
         params.symbol.value,
         params.totalSupply.value,
         params.decimals.value
-      )
-    );
+      );
+
+    await executeContractCall(contractCall, etherProvider, setTxHash);
     event.target.reset();
+  };
+
+  const connect = async () => {
+    const tokens = new ethers.Contract(
+      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      TokensAbi.abi,
+      signer
+    );
+    const res = await tokens.getTokenNames();
+    console.log(res);
   };
 
   return (
     <>
+      <Button onClick={connect}>Click</Button>
       <h1>Create a new Token</h1>
       <Form onSubmit={createToken}>
         <Form.Group className="mb-3" controlId="name">
