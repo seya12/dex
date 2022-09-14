@@ -1,6 +1,5 @@
 import Alert from "react-bootstrap/Alert";
-import NetworkInfo from "./NetworkInfo";
-import UserInfos from "./UserInfos";
+import InfoCard from "./InfoCard";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
@@ -32,6 +31,17 @@ const Home = () => {
     fetchNetwork();
   }, [etherProvider]);
 
+  const networkBody = {
+    "Network ID": network.id,
+    "Network Name": network.name,
+    "Block Number": network.blockNumber,
+  };
+
+  const userBody = {
+    Balance: user.balance,
+    "Public Key": user.publicKey,
+  };
+
   return (
     <>
       {!etherProvider && (
@@ -39,8 +49,8 @@ const Home = () => {
       )}
       {etherProvider && (
         <>
-          <NetworkInfo {...network} />
-          <UserInfos {...user} />
+          <InfoCard header="Network Infos" body={networkBody} />
+          <InfoCard header="User Infos" body={userBody} />
         </>
       )}
     </>
