@@ -81,6 +81,9 @@ const Exchange = () => {
   const showClosedTrades = async () => {};
 
   const makeTrade = async (e) => {
+    console.log(e);
+    console.log(e.target.offerToken);
+    console.log(e.target.offerToken.value);
     e.preventDefault();
     console.log(e.target.offerAmount.value);
 
