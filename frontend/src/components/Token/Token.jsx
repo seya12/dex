@@ -11,6 +11,7 @@ import { ApplicationContext } from "../../ApplicationContext";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import TransactionResult from "../util/TransactionResult";
 import { executeContractCall } from "../../proxies/executeContractCall";
+import contractAddresses from "../../resources/addresses.json";
 
 const Token = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
@@ -25,7 +26,7 @@ const Token = () => {
     event.preventDefault();
     const params = event.target;
     const tokens = new ethers.Contract(
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      contractAddresses["Tokens"],
       TokensAbi.abi,
       signer
     );
@@ -43,7 +44,7 @@ const Token = () => {
 
   const connect = async () => {
     const tokens = new ethers.Contract(
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      contractAddresses["Tokens"],
       TokensAbi.abi,
       signer
     );

@@ -5,6 +5,7 @@
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
 const hre = require("hardhat");
+const { writeContractAddress } = require("./writeFile");
 
 async function main() {
   const token = await hre.ethers.getContractFactory("Tokens");
@@ -12,6 +13,7 @@ async function main() {
 
   await tokensContract.deployed();
   console.log("tokens deployed to: ", tokensContract.address);
+  writeContractAddress("Tokens", tokensContract.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

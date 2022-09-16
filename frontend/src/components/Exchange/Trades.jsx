@@ -14,9 +14,9 @@ const Trades = ({ trades }) => {
         </tr>
       </thead>
       <tbody>
-        {trades.map((trade) => {
+        {trades.map((trade, index) => {
           return (
-            <tr>
+            <tr key={index}>
               <td>{trade.seller.tokenSymbol}</td>
               <td>{trade.seller.amount.toString()}</td>
               <td>{trade.buyer.tokenSymbol}</td>
