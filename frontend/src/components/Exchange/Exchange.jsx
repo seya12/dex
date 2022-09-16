@@ -23,12 +23,14 @@ const Exchange = () => {
     {
       seller: {
         participant: "",
-        token: "",
+        tokenAddress: "",
+        tokenSymbol: "",
         amount: 0,
       },
       buyer: {
         participant: "",
-        token: "",
+        tokenAddress: "",
+        tokenSymbol: "",
         amount: 0,
       },
       open: true,
@@ -59,7 +61,7 @@ const Exchange = () => {
   useEffect(() => {
     async function fetchTokens() {
       const tokens = new ethers.Contract(
-        "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+        "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
         TokensAbi.abi,
         etherProvider
       );
@@ -81,32 +83,16 @@ const Exchange = () => {
   const showClosedTrades = async () => {};
 
   const makeTrade = async (e) => {
-    console.log(e);
-    console.log(e.target.offerToken);
-    console.log(e.target.offerToken.value);
     e.preventDefault();
-    console.log(e.target.offerAmount.value);
 
-    const partners = [
-      {
-        participant: await signer.getAddress(),
-        token: e.target.offerToken.value,
-        amount: e.target.offerAmount.value,
-      },
-      {
-        participant: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-        token: e.target.forToken.value,
-        amount: e.target.forAmount.value,
-      },
-    ];
-    const trade = {
-      seller: partners[0],
-      buyer: partners[1],
-      open: true,
-    };
     const trades = new ethers.Contract(CONTRACT_ADDRESS, TradesAbi.abi, signer);
-
-    const tx = await trades.addTrade(trade);
+    const form = e.target;
+    const tx = await trades.addTrade(
+      form.offerToken.value,
+      form.offerAmount.value,
+      form.forToken.value,
+      form.forAmount.value
+    );
     setShowModal(false);
     await tx.wait();
 

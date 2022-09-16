@@ -36,7 +36,7 @@ async function main() {
   await tradesContract.deployTransaction.wait();
   console.log("trades deployed to: ", tradesContract.address);
 
-  addTrades(tradesContract);
+  // addTrades(tradesContract);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

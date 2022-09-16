@@ -17,9 +17,9 @@ const Trades = ({ trades }) => {
         {trades.map((trade) => {
           return (
             <tr>
-              <td>{trade.seller.token}</td>
+              <td>{trade.seller.tokenSymbol}</td>
               <td>{trade.seller.amount.toString()}</td>
-              <td>{trade.buyer.token}</td>
+              <td>{trade.buyer.tokenSymbol}</td>
               <td>{trade.buyer.amount.toString()}</td>
               <td>
                 <Button variant="dark">Take Trade</Button>
