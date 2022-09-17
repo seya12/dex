@@ -29,7 +29,7 @@ const TradeModal = ({ closeModal, makeTrade, tokens }) => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="offerAmount">
               <Form.Label>Offer amount</Form.Label>
-              <Form.Control type="number" />
+              <Form.Control type="number" required />
             </Form.Group>
             <Form.Group className="mb-3" controlId="forToken">
               <Form.Label>For Token</Form.Label>
@@ -37,7 +37,7 @@ const TradeModal = ({ closeModal, makeTrade, tokens }) => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="forAmount">
               <Form.Label>For amount</Form.Label>
-              <Form.Control type="number" />
+              <Form.Control type="number" required />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>

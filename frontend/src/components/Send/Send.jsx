@@ -12,6 +12,8 @@ import { executeContractCall } from "../../proxies/executeContractCall";
 
 const Send = () => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
+  const [amountError, setAmountError] = useState(false);
+
   const [txHash, setTxHash] = useState({
     hash: "",
     waiting: false,
@@ -24,6 +26,11 @@ const Send = () => {
     const receiver = event.target.receiver.value;
     const amount = event.target.amount.value;
 
+    if (amount <= 0) {
+      setAmountError(true);
+      return;
+    }
+
     const tx = {
       from: user.publicKey,
       to: receiver,
@@ -33,6 +40,7 @@ const Send = () => {
     const contractCall = () => signer.sendTransaction(tx);
     await executeContractCall(contractCall, etherProvider, setTxHash);
 
+    setAmountError(false);
     event.target.reset();
   };
 
@@ -42,11 +50,14 @@ const Send = () => {
       <Form onSubmit={sendTransaction}>
         <Form.Group className="mb-3" controlId="receiver">
           <Form.Label>Receiver Public Key:</Form.Label>
-          <Form.Control type="text" autoFocus />
+          <Form.Control type="text" autoFocus required />
         </Form.Group>
         <Form.Group className="mb-3" controlId="amount">
           <Form.Label>ETH to be sent:</Form.Label>
-          <Form.Control type="amount" />
+          <Form.Control type="number" required isInvalid={amountError} />
+          <Form.Control.Feedback type="invalid">
+            Number must greater than 0
+          </Form.Control.Feedback>
         </Form.Group>
         {!signer && <p>Please connect on the overview page!</p>}
         <Button type="submit" disabled={!signer}>

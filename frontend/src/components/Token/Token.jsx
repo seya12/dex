@@ -59,19 +59,19 @@ const Token = () => {
       <Form onSubmit={createToken}>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Token Name:</Form.Label>
-          <Form.Control type="text" autoFocus />
+          <Form.Control type="text" autoFocus required />
         </Form.Group>
         <Form.Group className="mb-3" controlId="symbol">
           <Form.Label>Token Symbol:</Form.Label>
-          <Form.Control type="text" />
+          <Form.Control type="text" required />
         </Form.Group>
         <Form.Group className="mb-3" controlId="totalSupply">
           <Form.Label>Total Supply:</Form.Label>
-          <Form.Control type="number" />
+          <Form.Control type="number" required />
         </Form.Group>
         <Form.Group className="mb-3" controlId="decimals">
           <Form.Label>Token Decimals:</Form.Label>
-          <Form.Control type="number" />
+          <Form.Control type="number" required />
         </Form.Group>
 
         {!signer && <p>Please connect on the overview page!</p>}
