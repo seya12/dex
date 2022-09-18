@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 import "./Token.sol";
 
 contract Tokens {
-    address[] public tokens;
+    Token[] public tokens;
 
     function createToken(
         string memory name_,
@@ -15,37 +15,71 @@ contract Tokens {
         uint decimals_
     ) public {
         Token token = new Token(name_, symbol_, totalSupply_, decimals_);
-        tokens.push(address(token));
+        tokens.push(token);
     }
 
-    function getTokens() external view returns (address[] memory) {
-        return tokens;
-    }
+    // function getTokens() external view returns (address[] memory) {
+    //     return tokens;
+    // }
 
-    function getTokenNames() external view returns (string[] memory) {
-        string[] memory tokenNames = new string[](tokens.length);
+    // function getTokenNames() external view returns (string[] memory) {
+    //     string[] memory tokenNames = new string[](tokens.length);
 
-        for (uint i = 0; i < tokens.length; i++) {
-            Token t = Token(tokens[i]);
-            tokenNames[i] = t.name();
-        }
+    //     for (uint i = 0; i < tokens.length; i++) {
+    //         Token t = Token(tokens[i]);
+    //         tokenNames[i] = t.name();
+    //     }
 
-        return tokenNames;
-    }
+    //     return tokenNames;
+    // }
 
-    function getTokenMappings()
+    // function getTokenMappings()
+    //     external
+    //     view
+    //     returns (address[] memory, string[] memory)
+    // {
+    //     string[] memory tokenNames = new string[](tokens.length);
+
+    //     for (uint i = 0; i < tokens.length; i++) {
+    //         Token t = Token(tokens[i]);
+    //         tokenNames[i] = t.name();
+    //     }
+
+    //     return (tokens, tokenNames);
+    // }
+
+    function getTokens()
         external
         view
-        returns (address[] memory, string[] memory)
+        returns (
+            address[] memory owners,
+            string[] memory names,
+            string[] memory symbols,
+            uint[] memory totalSupplies,
+            uint[] memory decimals,
+            address[] memory addresses
+        )
     {
-        string[] memory tokenNames = new string[](tokens.length);
+        owners = new address[](tokens.length);
+        names = new string[](tokens.length);
+        symbols = new string[](tokens.length);
+        totalSupplies = new uint[](tokens.length);
+        decimals = new uint[](tokens.length);
+        addresses = new address[](tokens.length);
 
         for (uint i = 0; i < tokens.length; i++) {
-            Token t = Token(tokens[i]);
-            tokenNames[i] = t.name();
+            owners[i] = tokens[i].owner();
+            names[i] = tokens[i].name();
+            symbols[i] = tokens[i].symbol();
+            totalSupplies[i] = tokens[i].totalSupply();
+            decimals[i] = tokens[i].decimals();
+            addresses[i] = address(tokens[i]);
         }
+        return (owners, names, symbols, totalSupplies, decimals, addresses);
+    }
 
-        return (tokens, tokenNames);
+    function getTokenss() public view returns (Token[] memory) {
+        return tokens;
     }
 
     receive() external payable {} // to support receiving ETH by default

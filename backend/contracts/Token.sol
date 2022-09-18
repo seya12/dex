@@ -6,13 +6,13 @@ import "hardhat/console.sol";
 import "./IERC20.sol";
 
 contract Token is IERC20 {
+    address private _owner;
+
     string private _name;
     string private _symbol;
 
     uint private _totalSupply;
     uint private _decimals;
-
-    address private _owner;
 
     mapping(address => uint) private _balances;
     mapping(address => mapping(address => uint)) private _allowances;
@@ -29,6 +29,10 @@ contract Token is IERC20 {
         _decimals = decimals_;
         _owner = msg.sender;
         _balances[_owner] = _totalSupply;
+    }
+
+    function owner() public view returns (address) {
+        return _owner;
     }
 
     function name() public view override returns (string memory) {
