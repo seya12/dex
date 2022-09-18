@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createContext } from "react";
 import { ethers } from "ethers";
 import { useEffect } from "react";
+import contractAddresses from "./resources/addresses.json";
 
 export const ApplicationContext = createContext();
 
@@ -27,7 +28,14 @@ export const ContextProvider = ({ children }) => {
 
   return (
     <ApplicationContext.Provider
-      value={{ etherProvider, signer, setSigner, user, setUser }}
+      value={{
+        etherProvider,
+        signer,
+        setSigner,
+        user,
+        setUser,
+        contractAddresses,
+      }}
     >
       {children}
     </ApplicationContext.Provider>
