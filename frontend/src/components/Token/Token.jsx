@@ -8,14 +8,12 @@ import { useTokens } from "../customHooks/useTokens";
 import { withTransactionResult } from "../withTransactionResult";
 
 const BasicToken = ({ transaction, setTransaction }) => {
-  const { etherProvider, signer, contractAddresses } =
-    useContext(ApplicationContext);
+  const { etherProvider, signer } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
   const { tokens, createToken } = useTokens(
     etherProvider,
     signer,
     ethers,
-    contractAddresses["Tokens"],
     setTransaction
   );
 
@@ -49,5 +47,4 @@ const BasicToken = ({ transaction, setTransaction }) => {
 };
 
 const Token = withTransactionResult(BasicToken);
-
 export default Token;

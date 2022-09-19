@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import { executeContractCall } from "../../proxies/executeContractCall";
+import contractAddresses from "../../resources/addresses.json";
 
-export function useTokens(
-  etherProvider,
-  signer,
-  ethers,
-  contractAddress,
-  setTransaction
-) {
+export function useTokens(etherProvider, signer, ethers, setTransaction) {
   const [tokensContract, setTokensContract] = useState();
   const [tokens, setTokens] = useState([
     {
@@ -26,9 +21,13 @@ export function useTokens(
       return;
     }
     setTokensContract(
-      new ethers.Contract(contractAddress, TokensAbi.abi, etherProvider)
+      new ethers.Contract(
+        contractAddresses["Tokens"],
+        TokensAbi.abi,
+        etherProvider
+      )
     );
-  }, [contractAddress, etherProvider, ethers]);
+  }, [etherProvider, ethers]);
 
   const fetchTokens = useCallback(async () => {
     if (!etherProvider || !tokensContract) {
@@ -55,7 +54,7 @@ export function useTokens(
 
   const createToken = async (params) => {
     const signerContract = new ethers.Contract(
-      contractAddress,
+      contractAddresses["Tokens"],
       TokensAbi.abi,
       signer
     );
