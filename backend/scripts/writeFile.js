@@ -8,7 +8,7 @@ const writeContractAddress = async (name, address) => {
     );
     parsed = JSON.parse(res);
   } catch (exception) {
-    console.log("error during read;", exception);
+    console.log("error during read, probably resource does not exist");
   }
 
   parsed[name] = address;
