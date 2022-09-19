@@ -4,7 +4,6 @@ import Table from "react-bootstrap/esm/Table";
 import Balances from "./Balances";
 
 function TokenOverview({ tokens }) {
-  console.log(tokens);
   const [showModal, setShowModal] = useState(false);
   const [address, setAddress] = useState(0);
   const closeModal = () => setShowModal(false);

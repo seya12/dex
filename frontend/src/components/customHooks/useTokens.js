@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
+import { executeContractCall } from "../../proxies/executeContractCall";
 
 export function useTokens(
   etherProvider,
+  signer,
   ethers,
   contractAddress,
-  reloadTokens
+  setTransaction
 ) {
   const [tokensContract, setTokensContract] = useState();
   const [tokens, setTokens] = useState([
@@ -28,27 +30,46 @@ export function useTokens(
     );
   }, [contractAddress, etherProvider, ethers]);
 
-  useEffect(() => {
-    async function fetchTokens() {
-      if (!etherProvider || !tokensContract || !reloadTokens) {
-        return;
-      }
-      const tokens = await tokensContract.getTokens();
-
-      const obj = tokens.addresses.map((addr, i) => {
-        return {
-          address: tokens.addresses[i],
-          decimals: tokens.decimals[i].toString(),
-          name: tokens.names[i],
-          owner: tokens.owners[i],
-          symbol: tokens.symbols[i],
-          totalSupply: tokens.totalSupplies[i].toString(),
-        };
-      });
-      setTokens(obj);
+  const fetchTokens = useCallback(async () => {
+    if (!etherProvider || !tokensContract) {
+      return;
     }
-    fetchTokens();
-  }, [etherProvider, reloadTokens, tokensContract]);
+    const tokens = await tokensContract.getTokens();
 
-  return tokens;
+    const obj = tokens.addresses.map((addr, i) => {
+      return {
+        address: tokens.addresses[i],
+        decimals: tokens.decimals[i].toString(),
+        name: tokens.names[i],
+        owner: tokens.owners[i],
+        symbol: tokens.symbols[i],
+        totalSupply: tokens.totalSupplies[i].toString(),
+      };
+    });
+    setTokens(obj);
+  }, [etherProvider, tokensContract]);
+
+  useEffect(() => {
+    fetchTokens();
+  }, [fetchTokens]);
+
+  const createToken = async (params) => {
+    const signerContract = new ethers.Contract(
+      contractAddress,
+      TokensAbi.abi,
+      signer
+    );
+    const contractCall = () =>
+      signerContract.createToken(
+        params.name.value,
+        params.symbol.value,
+        params.totalSupply.value,
+        params.decimals.value
+      );
+
+    await executeContractCall(contractCall, etherProvider, setTransaction);
+    fetchTokens();
+  };
+
+  return { tokens, createToken };
 }
