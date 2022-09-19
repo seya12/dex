@@ -3,7 +3,6 @@ Feedback that token has been created
 Maybe a list with previously created tokens
 */
 
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
@@ -12,6 +11,7 @@ import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import TransactionResult from "../util/TransactionResult";
 import { executeContractCall } from "../../proxies/executeContractCall";
 import TokenOverview from "./TokenOverview";
+import CreateTokenModal from "./CreateTokenModal";
 
 const Token = () => {
   const { etherProvider, signer, contractAddresses } =
@@ -23,41 +23,44 @@ const Token = () => {
     error: false,
   });
   const [tokenContract, setTokenContract] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [reloadTokens, setReloadTokens] = useState(false);
   const [tokens, setTokens] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function fetchTokens() {
-      if (!etherProvider || !signer) {
+      if (!etherProvider) {
         return;
       }
-      setSuccess(false);
-      const tokens = new ethers.Contract(
+      setReloadTokens(false);
+      const contract = new ethers.Contract(
         contractAddresses["Tokens"],
         TokensAbi.abi,
-        signer
+        etherProvider
       );
       setTokenContract(tokenContract);
-      const res = await tokens.getTokens();
-      console.log(res);
+      const tokens = await contract.getTokens();
 
-      console.log("rwo");
-      const res2 = await tokens.getTokenss();
-      console.log(res2);
-      const obj = res.addresses.map((addr, i) => {
+      const obj = tokens.addresses.map((addr, i) => {
         return {
-          address: res.addresses[i],
-          decimals: res.decimals[i].toString(),
-          name: res.names[i],
-          owner: res.owners[i],
-          symbol: res.symbols[i],
-          totalSupply: res.totalSupplies[i].toString(),
+          address: tokens.addresses[i],
+          decimals: tokens.decimals[i].toString(),
+          name: tokens.names[i],
+          owner: tokens.owners[i],
+          symbol: tokens.symbols[i],
+          totalSupply: tokens.totalSupplies[i].toString(),
         };
       });
       setTokens(obj);
     }
     fetchTokens();
-  }, [etherProvider, signer, success]);
+  }, [etherProvider, reloadTokens, tokenContract, contractAddresses]);
+
+  useEffect(() => {
+    if (txHash.waiting) {
+      setShowModal(false);
+    }
+  }, [txHash]);
 
   const createToken = async (event) => {
     event.preventDefault();
@@ -67,6 +70,7 @@ const Token = () => {
       TokensAbi.abi,
       signer
     );
+
     const contractCall = () =>
       tokens.createToken(
         params.name.value,
@@ -76,37 +80,24 @@ const Token = () => {
       );
 
     await executeContractCall(contractCall, etherProvider, setTxHash);
-    event.target.reset();
-    setSuccess(true);
+    setShowModal(false);
+    setReloadTokens(true);
   };
 
   return (
     <>
       <TokenOverview tokens={tokens} />
-      <h1>Create a new Token</h1>
-      <Form onSubmit={createToken}>
-        <Form.Group className="mb-3" controlId="name">
-          <Form.Label>Token Name:</Form.Label>
-          <Form.Control type="text" autoFocus required />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="symbol">
-          <Form.Label>Token Symbol:</Form.Label>
-          <Form.Control type="text" required />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="totalSupply">
-          <Form.Label>Total Supply:</Form.Label>
-          <Form.Control type="number" required />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="decimals">
-          <Form.Label>Token Decimals:</Form.Label>
-          <Form.Control type="number" required />
-        </Form.Group>
+      {!signer && <p>Please connect on the overview page!</p>}
+      <Button disabled={!signer} onClick={() => setShowModal(true)}>
+        Create new Token
+      </Button>
 
-        {!signer && <p>Please connect on the overview page!</p>}
-        <Button type="submit" disabled={!signer}>
-          Submit
-        </Button>
-      </Form>
+      {showModal && (
+        <CreateTokenModal
+          closeModal={() => setShowModal(false)}
+          createToken={createToken}
+        />
+      )}
       <TransactionResult
         txHash={txHash}
         key={txHash.hash + txHash.waiting + txHash.confirmed + txHash.error}

@@ -21,14 +21,14 @@ const Balances = ({ closeModal, address }) => {
       setBalance(balances.toString());
     }
     getBalances();
-  }, [etherProvider]);
+  }, [etherProvider, address, user]);
   return (
     <>
       <Modal show="true" onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>Balances</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Your Balance for this token is: {balance}</Modal.Body>
+        <Modal.Body>Your Balance for this token: {balance}</Modal.Body>
       </Modal>
     </>
   );

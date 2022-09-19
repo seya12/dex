@@ -18,36 +18,6 @@ contract Tokens {
         tokens.push(token);
     }
 
-    // function getTokens() external view returns (address[] memory) {
-    //     return tokens;
-    // }
-
-    // function getTokenNames() external view returns (string[] memory) {
-    //     string[] memory tokenNames = new string[](tokens.length);
-
-    //     for (uint i = 0; i < tokens.length; i++) {
-    //         Token t = Token(tokens[i]);
-    //         tokenNames[i] = t.name();
-    //     }
-
-    //     return tokenNames;
-    // }
-
-    // function getTokenMappings()
-    //     external
-    //     view
-    //     returns (address[] memory, string[] memory)
-    // {
-    //     string[] memory tokenNames = new string[](tokens.length);
-
-    //     for (uint i = 0; i < tokens.length; i++) {
-    //         Token t = Token(tokens[i]);
-    //         tokenNames[i] = t.name();
-    //     }
-
-    //     return (tokens, tokenNames);
-    // }
-
     function getTokens()
         external
         view
@@ -76,10 +46,6 @@ contract Tokens {
             addresses[i] = address(tokens[i]);
         }
         return (owners, names, symbols, totalSupplies, decimals, addresses);
-    }
-
-    function getTokenss() public view returns (Token[] memory) {
-        return tokens;
     }
 
     receive() external payable {} // to support receiving ETH by default
