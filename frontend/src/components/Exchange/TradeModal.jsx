@@ -6,10 +6,10 @@ import React from "react";
 
 const TradeModal = ({ closeModal, makeTrade, tokens }) => {
   const tokenOptions = () =>
-    [...tokens].map(([key, value]) => {
+    tokens?.map(({ address, symbol }) => {
       return (
-        <option key={key} value={key}>
-          {value}
+        <option key={address} value={address}>
+          {symbol}
         </option>
       );
     });

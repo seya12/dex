@@ -7,27 +7,20 @@ import Form from "react-bootstrap/Form";
 import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
-import TransactionResult from "../util/TransactionResult";
 import { executeContractCall } from "../../proxies/executeContractCall";
+import { withTransactionResult } from "../withTransactionResult";
 
-const Send = () => {
+const BasicSend = ({ setTransaction }) => {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
-  const [amountError, setAmountError] = useState(false);
+  const [isAmountNegative, setIsAmountNegative] = useState(false);
 
-  const [txHash, setTxHash] = useState({
-    hash: "",
-    waiting: false,
-    confirmed: false,
-    error: false,
-  });
-
-  const sendTransaction = async (event) => {
+  const sendEther = async (event) => {
     event.preventDefault();
     const receiver = event.target.receiver.value;
     const amount = event.target.amount.value;
 
     if (amount <= 0) {
-      setAmountError(true);
+      setIsAmountNegative(true);
       return;
     }
 
@@ -38,38 +31,36 @@ const Send = () => {
     };
 
     const contractCall = () => signer.sendTransaction(tx);
-    await executeContractCall(contractCall, etherProvider, setTxHash);
+    await executeContractCall(contractCall, etherProvider, setTransaction);
 
-    setAmountError(false);
+    setIsAmountNegative(false);
     event.target.reset();
   };
 
   return (
     <>
       <h1>Send ETH</h1>
-      <Form onSubmit={sendTransaction}>
+      <Form onSubmit={sendEther}>
         <Form.Group className="mb-3" controlId="receiver">
           <Form.Label>Receiver Public Key:</Form.Label>
           <Form.Control type="text" autoFocus required />
         </Form.Group>
         <Form.Group className="mb-3" controlId="amount">
           <Form.Label>ETH to be sent:</Form.Label>
-          <Form.Control type="number" required isInvalid={amountError} />
+          <Form.Control type="number" required isInvalid={isAmountNegative} />
           <Form.Control.Feedback type="invalid">
             Number must greater than 0
           </Form.Control.Feedback>
         </Form.Group>
-        {!signer && <p>Please connect on the overview page!</p>}
+        {!signer && <p>Please connect via the "Connect" button!</p>}
         <Button type="submit" disabled={!signer}>
           Submit
         </Button>
       </Form>
-      <TransactionResult
-        txHash={txHash}
-        key={txHash.hash + txHash.waiting + txHash.confirmed + txHash.error}
-      />
     </>
   );
 };
+
+const Send = withTransactionResult(BasicSend);
 
 export default Send;

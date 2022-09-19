@@ -10,14 +10,21 @@ import { useContext, useState, useEffect, useCallback } from "react";
 
 import { ApplicationContext } from "../../ApplicationContext";
 import Trades from "./Trades";
-import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import TradesAbi from "../../artifacts/contracts/Trades.sol/Trades.json";
 import TradeModal from "./TradeModal";
 import contractAddresses from "../../resources/addresses.json";
+import { withTransactionResult } from "../withTransactionResult";
+import { useTokens } from "../customHooks/useTokens";
 
-const Exchange = () => {
+const BasicExchange = ({ setTransaction }) => {
   const { etherProvider, signer } = useContext(ApplicationContext);
-  const [availableTokens, setAvailableTokens] = useState(null);
+  const { tokens } = useTokens(
+    etherProvider,
+    signer,
+    ethers,
+    contractAddresses["Tokens"],
+    setTransaction
+  );
   const [showModal, setShowModal] = useState(false);
   const [trades, setTrades] = useState([
     {
@@ -55,28 +62,6 @@ const Exchange = () => {
     fetchContract();
   }, [fetchContract]);
 
-  useEffect(() => {
-    async function fetchTokens() {
-      if (!etherProvider) {
-        return;
-      }
-      const tokens = new ethers.Contract(
-        contractAddresses["Tokens"],
-        TokensAbi.abi,
-        etherProvider
-      );
-      const t = await tokens.getTokens();
-      const addresses = t[0];
-      const names = t[1];
-      const map = new Map();
-      for (let i = 0; i < addresses?.length; i++) {
-        map.set(addresses[i], names[i]);
-      }
-      setAvailableTokens(map);
-    }
-    fetchTokens();
-  }, [etherProvider]);
-
   const makeTrade = async (e) => {
     e.preventDefault();
 
@@ -112,11 +97,12 @@ const Exchange = () => {
         <TradeModal
           closeModal={() => setShowModal(false)}
           makeTrade={makeTrade}
-          tokens={availableTokens}
+          tokens={tokens}
         />
       )}
     </>
   );
 };
 
+const Exchange = withTransactionResult(BasicExchange);
 export default Exchange;

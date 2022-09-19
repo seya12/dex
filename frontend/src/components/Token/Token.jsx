@@ -2,20 +2,14 @@ import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
-import TransactionResult from "../util/TransactionResult";
 import TokenOverview from "./TokenOverview";
 import CreateTokenModal from "./CreateTokenModal";
 import { useTokens } from "../customHooks/useTokens";
+import { withTransactionResult } from "../withTransactionResult";
 
-const Token = () => {
+const BasicToken = ({ transaction, setTransaction }) => {
   const { etherProvider, signer, contractAddresses } =
     useContext(ApplicationContext);
-  const [transaction, setTransaction] = useState({
-    hash: "",
-    waiting: false,
-    confirmed: false,
-    error: false,
-  });
   const [showModal, setShowModal] = useState(false);
   const { tokens, createToken } = useTokens(
     etherProvider,
@@ -50,17 +44,10 @@ const Token = () => {
           createToken={submitToken}
         />
       )}
-      <TransactionResult
-        txHash={transaction}
-        key={
-          transaction.hash +
-          transaction.waiting +
-          transaction.confirmed +
-          transaction.error
-        }
-      />
     </>
   );
 };
+
+const Token = withTransactionResult(BasicToken);
 
 export default Token;
