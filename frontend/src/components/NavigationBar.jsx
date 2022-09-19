@@ -8,9 +8,15 @@ import { useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 
 const NavigationBar = () => {
-  const { etherProvider, setSigner, setUser } = useContext(ApplicationContext);
+  const { etherProvider, signer, setSigner, setUser } =
+    useContext(ApplicationContext);
 
   const connect = async () => {
+    if (signer) {
+      setSigner(null);
+      return;
+    }
+
     const accounts = await etherProvider.send("eth_requestAccounts", []);
     setSigner(etherProvider.getSigner());
     let balance = await etherProvider.getBalance(accounts[0]);
@@ -41,7 +47,7 @@ const NavigationBar = () => {
         <Nav>
           <Navbar.Collapse className="justify-content-end">
             <Button variant="outline-light" onClick={connect}>
-              Connect
+              {!signer ? "Connect" : "Log out"}
             </Button>
           </Navbar.Collapse>
         </Nav>
