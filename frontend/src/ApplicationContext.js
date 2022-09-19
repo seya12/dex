@@ -7,8 +7,8 @@ import contractAddresses from "./resources/addresses.json";
 export const ApplicationContext = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [etherProvider, setEtherProvider] = useState();
-  const [signer, setSigner] = useState();
+  const [etherProvider, setEtherProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
   const [user, setUser] = useState({
     publicKey: "",
     balance: 0,

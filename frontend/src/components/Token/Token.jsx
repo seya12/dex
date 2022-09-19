@@ -1,8 +1,3 @@
-/*
-Feedback that token has been created
-Maybe a list with previously created tokens
-*/
-
 import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
@@ -12,6 +7,7 @@ import TransactionResult from "../util/TransactionResult";
 import { executeContractCall } from "../../proxies/executeContractCall";
 import TokenOverview from "./TokenOverview";
 import CreateTokenModal from "./CreateTokenModal";
+import { useTokens } from "../customHooks/useTokens";
 
 const Token = () => {
   const { etherProvider, signer, contractAddresses } =
@@ -22,39 +18,14 @@ const Token = () => {
     confirmed: false,
     error: false,
   });
-  const [tokenContract, setTokenContract] = useState(null);
-  const [reloadTokens, setReloadTokens] = useState(false);
-  const [tokens, setTokens] = useState(null);
+  const [reloadTokens, setReloadTokens] = useState(true);
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    async function fetchTokens() {
-      if (!etherProvider) {
-        return;
-      }
-      setReloadTokens(false);
-      const contract = new ethers.Contract(
-        contractAddresses["Tokens"],
-        TokensAbi.abi,
-        etherProvider
-      );
-      setTokenContract(tokenContract);
-      const tokens = await contract.getTokens();
-
-      const obj = tokens.addresses.map((addr, i) => {
-        return {
-          address: tokens.addresses[i],
-          decimals: tokens.decimals[i].toString(),
-          name: tokens.names[i],
-          owner: tokens.owners[i],
-          symbol: tokens.symbols[i],
-          totalSupply: tokens.totalSupplies[i].toString(),
-        };
-      });
-      setTokens(obj);
-    }
-    fetchTokens();
-  }, [etherProvider, reloadTokens, tokenContract, contractAddresses]);
+  const tokens = useTokens(
+    etherProvider,
+    ethers,
+    contractAddresses["Tokens"],
+    reloadTokens
+  );
 
   useEffect(() => {
     if (txHash.waiting) {

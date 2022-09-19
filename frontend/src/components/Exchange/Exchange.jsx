@@ -17,7 +17,7 @@ import contractAddresses from "../../resources/addresses.json";
 
 const Exchange = () => {
   const { etherProvider, signer } = useContext(ApplicationContext);
-  const [availableTokens, setAvailableTokens] = useState();
+  const [availableTokens, setAvailableTokens] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [trades, setTrades] = useState([
     {
@@ -65,7 +65,7 @@ const Exchange = () => {
         TokensAbi.abi,
         etherProvider
       );
-      const t = await tokens.getTokenMappings();
+      const t = await tokens.getTokens();
       const addresses = t[0];
       const names = t[1];
       const map = new Map();
