@@ -27,7 +27,7 @@ contract Token is IERC20 {
         _symbol = symbol_;
         _totalSupply = totalSupply_;
         _decimals = decimals_;
-        _owner = msg.sender;
+        _owner = tx.origin;
         _balances[_owner] = _totalSupply;
     }
 
@@ -52,15 +52,20 @@ contract Token is IERC20 {
     }
 
     function balanceOf(address account) public view override returns (uint) {
-        return 0;
+        return _balances[account];
     }
 
     function transfer(address recipient, uint amount)
         public
-        view
         override
         returns (bool)
     {
+        require(_balances[msg.sender] >= amount);
+
+        _balances[msg.sender] -= amount;
+        _balances[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
+
         return true;
     }
 
@@ -70,7 +75,7 @@ contract Token is IERC20 {
         override
         returns (uint)
     {
-        return 0;
+        return _allowances[owner][spender];
     }
 
     function approve(address spender, uint amount)
@@ -78,14 +83,27 @@ contract Token is IERC20 {
         override
         returns (bool)
     {
+        _allowances[msg.sender][spender] = amount;
+
+        emit Approval(msg.sender, spender, amount);
         return true;
     }
 
+    /*
+    used for allowances: sender of transaction must be allowed to transfer this amount
+    */
     function transferFrom(
         address sender,
         address recipient,
         uint amount
-    ) public view override returns (bool) {
+    ) public override returns (bool) {
+        require(_balances[sender] >= amount);
+        require(_allowances[sender][msg.sender] >= amount);
+
+        _balances[sender] -= amount;
+        _balances[recipient] += amount;
+
+        emit Transfer(sender, recipient, amount);
         return true;
     }
 }
