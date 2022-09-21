@@ -15,9 +15,11 @@ contract Trades {
         TradePartner seller;
         TradePartner buyer;
         bool open;
+        uint id;
     }
 
     Trade[] public trades;
+    uint tradesCounter;
 
     function addTrade(
         address offerToken,
@@ -41,7 +43,34 @@ contract Trades {
             forAmount
         );
 
-        trades.push(Trade(tp1, tp2, false));
+        trades.push(Trade(tp1, tp2, true, tradesCounter));
+        tradesCounter++;
+        t1.approve(address(this), offerAmount);
+    }
+
+    function swap(uint index) public returns (bool) {
+        require(trades[index].open == true, "Trade must be open");
+
+        Trade storage t = trades[index];
+        t.open = false;
+        t.buyer.participant = msg.sender;
+
+        Token seller = Token(t.seller.tokenAddress);
+        Token buyer = Token(t.buyer.tokenAddress);
+        buyer.approve(address(this), t.buyer.amount);
+
+        seller.transferFrom(
+            t.seller.participant,
+            t.buyer.participant,
+            t.seller.amount
+        );
+        buyer.transferFrom(
+            t.buyer.participant,
+            t.seller.participant,
+            t.buyer.amount
+        );
+
+        return true;
     }
 
     function getTrades() public view returns (Trade[] memory) {

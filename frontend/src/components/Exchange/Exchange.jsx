@@ -19,7 +19,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
   const { etherProvider, signer } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
   const { tokens } = useTokens(etherProvider, signer, ethers, setTransaction);
-  const { trades, createTrade } = useTrades(
+  const { trades, createTrade, takeTrade } = useTrades(
     etherProvider,
     signer,
     ethers,
@@ -42,7 +42,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
     <>
       <h1>Exchange</h1>
       <h2>Available Trades:</h2>
-      <Trades trades={trades} />
+      <Trades trades={trades} takeTrade={takeTrade} />
       <Button onClick={() => setShowModal(true)} disabled={!signer}>
         Offer Trade
       </Button>

@@ -20,6 +20,7 @@ export function useTrades(etherProvider, signer, ethers, setTransaction) {
         amount: 0,
       },
       open: true,
+      id: 0,
     },
   ]);
 
@@ -49,6 +50,18 @@ export function useTrades(etherProvider, signer, ethers, setTransaction) {
   }, [fetchTrades]);
 
   const createTrade = async (params) => {
+    /*
+    User A: Token T1
+    User B: Token T2
+
+    User A will amount1 T2 für amount2 T1
+    Trade wird erstellt. User A gibt Trades contract als allowance mit 10 T1
+    User B nimmt Trade an:
+     - T1: transferFrom(User A, User B, amount1)
+     - T2: transfer(User A, amount)
+
+    */
+
     const signerContract = new ethers.Contract(
       contractAddresses["Trades"],
       TradesAbi.abi,
@@ -66,5 +79,17 @@ export function useTrades(etherProvider, signer, ethers, setTransaction) {
     fetchTrades();
   };
 
-  return { trades, createTrade };
+  const takeTrade = async (index) => {
+    console.log(index.toString());
+    const signerContract = new ethers.Contract(
+      contractAddresses["Trades"],
+      TradesAbi.abi,
+      signer
+    );
+    const contractCall = () => signerContract.swap(index);
+
+    await executeContractCall(contractCall, etherProvider, setTransaction);
+  };
+
+  return { trades, createTrade, takeTrade };
 }

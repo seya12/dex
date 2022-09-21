@@ -13,10 +13,7 @@ const Balances = ({ closeModal, address }) => {
 
   useEffect(() => {
     async function getBalances() {
-      console.log(address);
       const token = new ethers.Contract(address, TokenAbi.abi, etherProvider);
-      console.log(token);
-      console.log(user.publicKey);
       const balances = await token.balanceOf(user.publicKey);
       setBalance(balances.toString());
     }

@@ -1,7 +1,7 @@
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 
-const Trades = ({ trades }) => {
+const Trades = ({ trades, takeTrade }) => {
   return (
     <Table striped bordered hover>
       <thead>
@@ -14,15 +14,17 @@ const Trades = ({ trades }) => {
         </tr>
       </thead>
       <tbody>
-        {trades?.map((trade, index) => {
+        {trades?.map((trade) => {
           return (
-            <tr key={index}>
+            <tr key={trade.id?.toString() ?? 0}>
               <td>{trade.seller.tokenSymbol}</td>
               <td>{trade.seller.amount.toString()}</td>
               <td>{trade.buyer.tokenSymbol}</td>
               <td>{trade.buyer.amount.toString()}</td>
               <td>
-                <Button variant="dark">Take Trade</Button>
+                <Button onClick={() => takeTrade(trade.id)} variant="dark">
+                  Take Trade
+                </Button>
               </td>
             </tr>
           );
