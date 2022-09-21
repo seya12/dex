@@ -4,7 +4,7 @@
 // You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
-const { writeContractAddress } = require("./writeFile");
+const { writeContractAddress } = require("./fileUtils.js");
 const hre = require("hardhat");
 
 async function addTrades(tradesContract) {
@@ -37,7 +37,6 @@ async function main() {
   await tradesContract.deployTransaction.wait();
   console.log("trades deployed to: ", tradesContract.address);
   writeContractAddress("Trades", tradesContract.address);
-
   // addTrades(tradesContract);
 }
 
