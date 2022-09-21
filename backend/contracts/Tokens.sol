@@ -13,9 +13,11 @@ contract Tokens {
         string memory symbol_,
         uint totalSupply_,
         uint decimals_
-    ) public {
+    ) public returns (address) {
         Token token = new Token(name_, symbol_, totalSupply_, decimals_);
         tokens.push(token);
+
+        return address(token);
     }
 
     function getTokens()

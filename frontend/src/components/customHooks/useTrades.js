@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import TradesAbi from "../../artifacts/contracts/Trades.sol/Trades.json";
+import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
 import { executeContractCall } from "../../proxies/executeContractCall";
 import contractAddresses from "../../resources/addresses.json";
 
@@ -79,14 +80,21 @@ export function useTrades(etherProvider, signer, ethers, setTransaction) {
     fetchTrades();
   };
 
-  const takeTrade = async (index) => {
-    console.log(index.toString());
+  const takeTrade = async (trade) => {
+    const token = new ethers.Contract(
+      trade.buyer.tokenAddress,
+      TokenAbi.abi,
+      signer
+    );
+    console.log(trade);
+    await token.approve(contractAddresses["Trades"], trade.buyer.amount);
+
     const signerContract = new ethers.Contract(
       contractAddresses["Trades"],
       TradesAbi.abi,
       signer
     );
-    const contractCall = () => signerContract.swap(index);
+    const contractCall = () => signerContract.swap(trade.id);
 
     await executeContractCall(contractCall, etherProvider, setTransaction);
   };

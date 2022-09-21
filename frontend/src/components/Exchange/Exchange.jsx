@@ -14,6 +14,8 @@ import TradeModal from "./TradeModal";
 import { withTransactionResult } from "../withTransactionResult";
 import { useTokens } from "../customHooks/useTokens";
 import { useTrades } from "../customHooks/useTrades";
+import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
+import contractAddresses from "../../resources/addresses.json";
 
 const BasicExchange = ({ transaction, setTransaction }) => {
   const { etherProvider, signer } = useContext(ApplicationContext);
@@ -28,6 +30,15 @@ const BasicExchange = ({ transaction, setTransaction }) => {
 
   const makeTrade = async (e) => {
     e.preventDefault();
+    const token = new ethers.Contract(
+      e.target.offerToken.value,
+      TokenAbi.abi,
+      signer
+    );
+    await token.approve(
+      contractAddresses["Trades"],
+      e.target.offerAmount.value
+    );
 
     await createTrade(e.target);
   };

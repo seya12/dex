@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.9;
+import "hardhat/console.sol";
 import "./Token.sol";
 
 contract Trades {
@@ -45,7 +46,6 @@ contract Trades {
 
         trades.push(Trade(tp1, tp2, true, tradesCounter));
         tradesCounter++;
-        t1.approve(address(this), offerAmount);
     }
 
     function swap(uint index) public returns (bool) {
@@ -57,7 +57,6 @@ contract Trades {
 
         Token seller = Token(t.seller.tokenAddress);
         Token buyer = Token(t.buyer.tokenAddress);
-        buyer.approve(address(this), t.buyer.amount);
 
         seller.transferFrom(
             t.seller.participant,
@@ -76,4 +75,6 @@ contract Trades {
     function getTrades() public view returns (Trade[] memory) {
         return trades;
     }
+
+    fallback() external {}
 }

@@ -22,7 +22,7 @@ const Trades = ({ trades, takeTrade }) => {
               <td>{trade.buyer.tokenSymbol}</td>
               <td>{trade.buyer.amount.toString()}</td>
               <td>
-                <Button onClick={() => takeTrade(trade.id)} variant="dark">
+                <Button onClick={() => takeTrade(trade)} variant="dark">
                   Take Trade
                 </Button>
               </td>
