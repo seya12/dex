@@ -22,7 +22,7 @@ const NavigationBar = () => {
     let balance = await etherProvider.getBalance(accounts[0]);
     balance = ethers.utils.formatEther(balance);
     setUser({
-      publicKey: accounts[0],
+      publicKey: ethers.utils.getAddress(accounts[0]),
       balance: balance.toString(),
     });
   };

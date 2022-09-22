@@ -1,7 +1,7 @@
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 
-const Trades = ({ trades, takeTrade }) => {
+const Trades = ({ trades, takeTrade, user }) => {
   return (
     <Table striped bordered hover>
       <thead>
@@ -14,21 +14,27 @@ const Trades = ({ trades, takeTrade }) => {
         </tr>
       </thead>
       <tbody>
-        {trades?.map((trade) => {
-          return (
-            <tr key={trade.id?.toString() ?? 0}>
-              <td>{trade.seller.tokenSymbol}</td>
-              <td>{trade.seller.amount.toString()}</td>
-              <td>{trade.buyer.tokenSymbol}</td>
-              <td>{trade.buyer.amount.toString()}</td>
-              <td>
-                <Button onClick={() => takeTrade(trade)} variant="dark">
-                  Take Trade
-                </Button>
-              </td>
-            </tr>
-          );
-        })}
+        {trades
+          ?.filter((trade) => trade.open)
+          .map((trade) => {
+            return (
+              <tr key={trade.id?.toString() ?? 0}>
+                <td>{trade.seller.tokenSymbol}</td>
+                <td>{trade.seller.amount.toString()}</td>
+                <td>{trade.buyer.tokenSymbol}</td>
+                <td>{trade.buyer.amount.toString()}</td>
+                <td>
+                  <Button
+                    onClick={() => takeTrade(trade)}
+                    disabled={trade.seller.participant === user.publicKey}
+                    variant="dark"
+                  >
+                    Take Trade
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
       </tbody>
     </Table>
   );

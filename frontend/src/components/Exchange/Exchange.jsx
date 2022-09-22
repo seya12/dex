@@ -1,8 +1,3 @@
-/*
-TODO: 
-- call smart contract and make exchange
-- write contract address in config file and fetch it from there
-*/
 import Button from "react-bootstrap/Button";
 
 import { ethers } from "ethers";
@@ -18,7 +13,7 @@ import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
 import contractAddresses from "../../resources/addresses.json";
 
 const BasicExchange = ({ transaction, setTransaction }) => {
-  const { etherProvider, signer } = useContext(ApplicationContext);
+  const { etherProvider, signer, user } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
   const { tokens } = useTokens(etherProvider, signer, ethers, setTransaction);
   const { trades, createTrade, takeTrade } = useTrades(
@@ -53,7 +48,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
     <>
       <h1>Exchange</h1>
       <h2>Available Trades:</h2>
-      <Trades trades={trades} takeTrade={takeTrade} />
+      <Trades trades={trades} takeTrade={takeTrade} user={user} />
       <Button onClick={() => setShowModal(true)} disabled={!signer}>
         Offer Trade
       </Button>
@@ -63,6 +58,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
           closeModal={() => setShowModal(false)}
           makeTrade={makeTrade}
           tokens={tokens}
+          user={user}
         />
       )}
     </>

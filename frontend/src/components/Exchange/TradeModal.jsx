@@ -4,15 +4,25 @@ import Form from "react-bootstrap/Form";
 
 import React from "react";
 
-const TradeModal = ({ closeModal, makeTrade, tokens }) => {
-  const tokenOptions = () =>
-    tokens?.map(({ address, symbol }) => {
-      return (
-        <option key={address} value={address}>
-          {symbol}
-        </option>
-      );
-    });
+const TradeModal = ({ closeModal, makeTrade, tokens, user }) => {
+  const ownedTokens = () => {
+    return tokenOptions(true);
+  };
+  const allTokens = () => {
+    return tokenOptions(false);
+  };
+  const tokenOptions = (filtered) => {
+    let tempTokens = tokens;
+    if (filtered) {
+      tempTokens = tokens?.filter((token) => token.owner === user.publicKey);
+    }
+
+    return tempTokens?.map(({ address, symbol }) => (
+      <option key={address} value={address}>
+        {symbol}
+      </option>
+    ));
+  };
 
   return (
     <>
@@ -24,7 +34,7 @@ const TradeModal = ({ closeModal, makeTrade, tokens }) => {
           <Modal.Body>
             <Form.Group className="mb-3" controlId="offerToken">
               <Form.Label>Offer Token</Form.Label>
-              <Form.Select>{tokenOptions()}</Form.Select>
+              <Form.Select>{ownedTokens()}</Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="offerAmount">
               <Form.Label>Offer amount</Form.Label>
@@ -32,7 +42,7 @@ const TradeModal = ({ closeModal, makeTrade, tokens }) => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="forToken">
               <Form.Label>For Token</Form.Label>
-              <Form.Select>{tokenOptions()}</Form.Select>
+              <Form.Select>{allTokens()}</Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="forAmount">
               <Form.Label>For amount</Form.Label>
