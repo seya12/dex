@@ -2,30 +2,12 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
-import { ethers } from "ethers";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { ApplicationContext } from "../ApplicationContext";
 
 const NavigationBar = () => {
-  const { etherProvider, signer, setSigner, setUser } =
-    useContext(ApplicationContext);
-
-  const connect = async () => {
-    if (signer) {
-      setSigner(null);
-      return;
-    }
-
-    const accounts = await etherProvider.send("eth_requestAccounts", []);
-    setSigner(etherProvider.getSigner());
-    let balance = await etherProvider.getBalance(accounts[0]);
-    balance = ethers.utils.formatEther(balance);
-    setUser({
-      publicKey: ethers.utils.getAddress(accounts[0]),
-      balance: balance.toString(),
-    });
-  };
+  const { signer, connect } = useContext(ApplicationContext);
 
   return (
     <Navbar bg="dark" variant="dark">

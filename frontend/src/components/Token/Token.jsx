@@ -1,21 +1,15 @@
-import Button from "react-bootstrap/Button";
-import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
 import { ApplicationContext } from "../../ApplicationContext";
-import TokenOverview from "./TokenOverview";
-import CreateTokenModal from "./CreateTokenModal";
 import { useTokens } from "../customHooks/useTokens";
 import { withTransactionResult } from "../withTransactionResult";
+import CreateTokenModal from "./CreateTokenModal";
+import TokenOverview from "./TokenOverview";
 
 const BasicToken = ({ transaction, setTransaction }) => {
-  const { etherProvider, signer } = useContext(ApplicationContext);
+  const { signer } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
-  const { tokens, createToken } = useTokens(
-    etherProvider,
-    signer,
-    ethers,
-    setTransaction
-  );
+  const { tokens, createToken } = useTokens(setTransaction);
 
   useEffect(() => {
     if (transaction.waiting) {

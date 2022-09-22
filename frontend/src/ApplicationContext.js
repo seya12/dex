@@ -25,14 +25,29 @@ export const ContextProvider = ({ children }) => {
     initializeProvider();
   }, []);
 
+  const connect = async () => {
+    if (signer) {
+      setSigner(null);
+      return;
+    }
+
+    const accounts = await etherProvider.send("eth_requestAccounts", []);
+    setSigner(etherProvider.getSigner());
+    let balance = await etherProvider.getBalance(accounts[0]);
+    balance = ethers.utils.formatEther(balance);
+    setUser({
+      publicKey: ethers.utils.getAddress(accounts[0]),
+      balance: balance.toString(),
+    });
+  };
+
   return (
     <ApplicationContext.Provider
       value={{
         etherProvider,
         signer,
-        setSigner,
         user,
-        setUser,
+        connect,
       }}
     >
       {children}

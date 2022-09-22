@@ -1,7 +1,3 @@
-/*
-TODO: hint that you need to be connected with signer
-better feedback that transaction is mined / to be mined
-*/
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { utils } from "ethers";

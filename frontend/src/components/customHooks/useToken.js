@@ -1,30 +1,53 @@
 import { ethers } from "ethers";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
+import contractAddresses from "../../resources/addresses.json";
 
 export function useToken(address) {
-  const { signer, user } = useContext(ApplicationContext);
+  const { etherProvider, signer, user } = useContext(ApplicationContext);
   const [tokenContract, setTokenContract] = useState(null);
   const [balance, setBalance] = useState("");
 
+  const getContract = useCallback(
+    (provider) => {
+      if (!provider || !address) {
+        return;
+      }
+
+      return new ethers.Contract(address, TokenAbi.abi, provider);
+    },
+    [address]
+  );
+
   useEffect(() => {
-    if (!signer) {
-      return;
-    }
-    setTokenContract(new ethers.Contract(address, TokenAbi.abi, signer));
-  }, [address, signer]);
+    setTokenContract(getContract(etherProvider));
+  }, [getContract, etherProvider]);
 
   useEffect(() => {
     async function fetchBalance() {
       let balance = 0;
-      if (signer && tokenContract) {
+      if (tokenContract) {
         balance = await tokenContract.balanceOf(user.publicKey);
       }
       setBalance(balance.toString());
     }
     fetchBalance();
-  }, [signer, tokenContract, user]);
+  }, [tokenContract, user]);
 
-  return { balance };
+  /*
+  tokenAddress is required as "address" prop is not updated synchronous -> can not wait for that
+  */
+
+  const approveTradesContract = async (tokenAddress, value) => {
+    const signerContract = new ethers.Contract(
+      tokenAddress,
+      TokenAbi.abi,
+      signer
+    );
+
+    await signerContract.approve(contractAddresses["Trades"], value);
+  };
+
+  return { tokenContract, balance, approveTradesContract };
 }

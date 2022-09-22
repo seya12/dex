@@ -1,37 +1,26 @@
 import Button from "react-bootstrap/Button";
 
-import { ethers } from "ethers";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ApplicationContext } from "../../ApplicationContext";
-import Trades from "./Trades";
-import TradeModal from "./TradeModal";
-import { withTransactionResult } from "../withTransactionResult";
+import { useToken } from "../customHooks/useToken";
 import { useTokens } from "../customHooks/useTokens";
 import { useTrades } from "../customHooks/useTrades";
-import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
-import contractAddresses from "../../resources/addresses.json";
+import { withTransactionResult } from "../withTransactionResult";
+import TradeModal from "./TradeModal";
+import Trades from "./Trades";
 
 const BasicExchange = ({ transaction, setTransaction }) => {
-  const { etherProvider, signer, user } = useContext(ApplicationContext);
+  const { signer, user } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
-  const { tokens } = useTokens(etherProvider, signer, ethers, setTransaction);
-  const { trades, createTrade, takeTrade } = useTrades(
-    etherProvider,
-    signer,
-    ethers,
-    setTransaction
-  );
+  const { approveTradesContract } = useToken("");
+  const { tokens } = useTokens(setTransaction);
+  const { trades, createTrade, takeTrade } = useTrades(setTransaction);
 
   const makeTrade = async (e) => {
     e.preventDefault();
-    const token = new ethers.Contract(
+    await approveTradesContract(
       e.target.offerToken.value,
-      TokenAbi.abi,
-      signer
-    );
-    await token.approve(
-      contractAddresses["Trades"],
       e.target.offerAmount.value
     );
 
@@ -56,7 +45,9 @@ const BasicExchange = ({ transaction, setTransaction }) => {
       {showModal && (
         <TradeModal
           closeModal={() => setShowModal(false)}
-          makeTrade={makeTrade}
+          makeTrade={(e) => {
+            makeTrade(e);
+          }}
           tokens={tokens}
           user={user}
         />
