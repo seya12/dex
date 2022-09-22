@@ -16,19 +16,6 @@ export function useTokens(etherProvider, signer, ethers, setTransaction) {
     },
   ]);
 
-  useEffect(() => {
-    if (!etherProvider) {
-      return;
-    }
-    setTokensContract(
-      new ethers.Contract(
-        contractAddresses["Tokens"],
-        TokensAbi.abi,
-        etherProvider
-      )
-    );
-  }, [etherProvider, ethers]);
-
   const fetchTokens = useCallback(async () => {
     if (!etherProvider || !tokensContract) {
       return;
@@ -47,6 +34,19 @@ export function useTokens(etherProvider, signer, ethers, setTransaction) {
     });
     setTokens(obj);
   }, [etherProvider, tokensContract]);
+
+  useEffect(() => {
+    if (!etherProvider) {
+      return;
+    }
+    setTokensContract(
+      new ethers.Contract(
+        contractAddresses["Tokens"],
+        TokensAbi.abi,
+        etherProvider
+      )
+    );
+  }, [etherProvider, ethers]);
 
   useEffect(() => {
     fetchTokens();

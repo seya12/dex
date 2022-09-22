@@ -1,24 +1,9 @@
-import React, { useState } from "react";
-import { useContext } from "react";
-import { useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import { ApplicationContext } from "../../ApplicationContext";
-import { ethers } from "ethers";
-import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
+import { useToken } from "../customHooks/useToken";
 
 const Balances = ({ closeModal, address }) => {
-  const { etherProvider, user } = useContext(ApplicationContext);
+  const { balance } = useToken(address);
 
-  const [balance, setBalance] = useState(-1);
-
-  useEffect(() => {
-    async function getBalances() {
-      const token = new ethers.Contract(address, TokenAbi.abi, etherProvider);
-      const balances = await token.balanceOf(user.publicKey);
-      setBalance(balances.toString());
-    }
-    getBalances();
-  }, [etherProvider, address, user]);
   return (
     <>
       <Modal show="true" onHide={closeModal}>

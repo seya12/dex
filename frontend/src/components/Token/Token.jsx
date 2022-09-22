@@ -30,7 +30,7 @@ const BasicToken = ({ transaction, setTransaction }) => {
 
   return (
     <>
-      <TokenOverview tokens={tokens} />
+      <TokenOverview tokens={tokens} signer={signer} />
       {!signer && <p>Please connect on the overview page!</p>}
       <Button disabled={!signer} onClick={() => setShowModal(true)}>
         Create new Token

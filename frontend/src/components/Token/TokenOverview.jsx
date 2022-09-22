@@ -3,13 +3,15 @@ import Button from "react-bootstrap/esm/Button";
 import Table from "react-bootstrap/esm/Table";
 import Balances from "./Balances";
 
-function TokenOverview({ tokens }) {
+function TokenOverview({ tokens, signer }) {
   const [showModal, setShowModal] = useState(false);
   const [address, setAddress] = useState(0);
   const closeModal = () => setShowModal(false);
   const openModal = (event) => {
-    setShowModal(true);
-    setAddress(event.target.value);
+    if (signer) {
+      setShowModal(true);
+      setAddress(event.target.value);
+    }
   };
 
   return (
