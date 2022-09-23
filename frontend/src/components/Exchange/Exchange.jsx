@@ -11,6 +11,9 @@ import TradeModal from "./TradeModal";
 import Trades from "./Trades";
 
 const BasicExchange = ({ transaction, setTransaction }) => {
+  /*
+  TODO: Listen for Events: Transfer and Approval. Maybe add an annotation that an event was fired
+  */
   const { signer, user } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
   const { approveTradesContract } = useToken("");
