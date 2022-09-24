@@ -31,6 +31,8 @@ contract Token is IERC20 {
         _balances[_owner] = _totalSupply;
     }
 
+    fallback() external {}
+
     function owner() public view returns (address) {
         return _owner;
     }
@@ -72,13 +74,13 @@ contract Token is IERC20 {
         return true;
     }
 
-    function allowance(address owner, address spender)
+    function allowance(address owner_, address spender)
         public
         view
         override
         returns (uint)
     {
-        return _allowances[owner][spender];
+        return _allowances[owner_][spender];
     }
 
     function approve(address spender, uint amount)
@@ -124,6 +126,4 @@ contract Token is IERC20 {
         emit Transfer(sender, recipient, amount);
         return true;
     }
-
-    fallback() external {}
 }
