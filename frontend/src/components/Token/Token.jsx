@@ -12,7 +12,7 @@ const BasicToken = ({ transaction, setTransaction }) => {
   const { tokens, createToken } = useTokens(setTransaction);
 
   useEffect(() => {
-    if (transaction.waiting) {
+    if (transaction.waiting || transaction.error) {
       setShowModal(false);
     }
   }, [transaction]);

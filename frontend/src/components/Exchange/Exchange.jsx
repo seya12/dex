@@ -16,7 +16,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
   */
   const { signer, user } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
-  const { approveTradesContract } = useToken("");
+  const { approveTradesContract } = useToken("", setTransaction);
   const { tokens } = useTokens(setTransaction);
   const { trades, createTrade, takeTrade } = useTrades(setTransaction);
 
@@ -31,7 +31,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
   };
 
   useEffect(() => {
-    if (transaction.waiting) {
+    if (transaction.waiting || transaction.error) {
       setShowModal(false);
     }
   }, [transaction]);
@@ -48,9 +48,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
       {showModal && (
         <TradeModal
           closeModal={() => setShowModal(false)}
-          makeTrade={(e) => {
-            makeTrade(e);
-          }}
+          makeTrade={makeTrade}
           tokens={tokens}
           user={user}
         />

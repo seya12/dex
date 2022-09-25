@@ -102,14 +102,6 @@ contract Token is IERC20 {
         address recipient,
         uint amount
     ) public override returns (bool) {
-        console.log("Token: ", _name);
-        console.log("Sender: ", sender);
-        console.log("Recipient: ", recipient);
-        console.log("Amount: ", amount);
-        console.log("Msg.sender: ", msg.sender);
-        console.log("Allowance: ", _allowances[sender][msg.sender]);
-        console.log("Balance: ", _balances[sender]);
-
         require(
             _balances[sender] >= amount,
             "Sender doesn't have enough funds"

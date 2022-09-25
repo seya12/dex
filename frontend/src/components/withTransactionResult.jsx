@@ -10,7 +10,7 @@ export const withTransactionResult = (WrappedComponent) => (props) => {
         setTransaction={setTransaction}
         {...props}
       />
-      <TransactionResult txHash={transaction} key={transactionKey} />
+      <TransactionResult txHash={transaction} key={transaction.key} />
     </>
   );
 };

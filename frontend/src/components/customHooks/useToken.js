@@ -3,8 +3,9 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
 import contractAddresses from "../../resources/addresses.json";
+import { executeContractCall } from "../../proxies/executeContractCall";
 
-export function useToken(address) {
+export function useToken(address, setTransaction) {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
   const [tokenContract, setTokenContract] = useState(null);
   const [balance, setBalance] = useState("");
@@ -46,7 +47,10 @@ export function useToken(address) {
       signer
     );
 
-    await signerContract.approve(contractAddresses["Trades"], value);
+    const contractCall = () =>
+      signerContract.approve(contractAddresses["Trades"], value);
+
+    await executeContractCall(contractCall, etherProvider, setTransaction);
   };
 
   return { tokenContract, balance, approveTradesContract };
