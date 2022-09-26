@@ -1,23 +1,24 @@
+/*
+TODO: use provider.once(txHash, (transaction))
+*/
 export const executeContractCall = async (
   contractCall,
   provider,
   setTransaction
 ) => {
-  let trans = {
-    hash: "",
-    waiting: false,
-    confirmed: false,
-    error: false,
-  };
   let transaction;
   try {
     transaction = await contractCall();
   } catch (err) {
-    setTransaction({ ...trans, error: true });
+    setTransaction({
+      hash: "",
+      waiting: false,
+      confirmed: false,
+      error: true,
+    });
     console.log(err.message);
     return;
   }
-
   setTransaction({
     hash: transaction.hash,
     waiting: true,

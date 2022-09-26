@@ -23,5 +23,16 @@ export function useTransactions() {
     transaction.confirmed +
     transaction.error;
 
-  return { transaction, setTransaction, transactionKey };
+  const modifyTransactions = (trans) => {
+    const newTransactions = [...transaction];
+    const index = newTransactions.findIndex(({ hash }) => hash === trans.hash);
+    if (index === -1) {
+      newTransactions.push(trans);
+    } else {
+      newTransactions[index] = trans;
+    }
+    setTransaction(newTransactions);
+  };
+
+  return { transaction, setTransaction, transactionKey, modifyTransactions };
 }

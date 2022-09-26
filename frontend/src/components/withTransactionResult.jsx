@@ -2,7 +2,7 @@ import { useTransactions } from "./customHooks/useTransactions";
 import TransactionResult from "./util/TransactionResult";
 
 export const withTransactionResult = (WrappedComponent) => (props) => {
-  const { transaction, setTransaction, transactionKey } = useTransactions();
+  const { transaction, setTransaction, modifyTransactions } = useTransactions();
   return (
     <>
       <WrappedComponent
@@ -10,7 +10,7 @@ export const withTransactionResult = (WrappedComponent) => (props) => {
         setTransaction={setTransaction}
         {...props}
       />
-      <TransactionResult txHash={transaction} key={transaction.key} />
+      <TransactionResult transaction={transaction} key={transaction.key} />
     </>
   );
 };

@@ -1,11 +1,11 @@
 import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 
-const TransactionResult = ({ txHash }) => {
+const TransactionResult = ({ transaction }) => {
   const [showAlert, setShowAlert] = useState(true);
   return (
     <>
-      {txHash.error && (
+      {transaction.error && (
         <Alert
           variant="danger"
           show={showAlert}
@@ -17,7 +17,7 @@ const TransactionResult = ({ txHash }) => {
           <p>Something went wrong, please see console for more information</p>
         </Alert>
       )}
-      {txHash.waiting && (
+      {transaction.waiting && (
         <Alert
           variant="warning"
           show={showAlert}
@@ -28,10 +28,10 @@ const TransactionResult = ({ txHash }) => {
           <Alert.Heading>
             Transaction created! Waiting to be mined
           </Alert.Heading>
-          <p>Transaction Hash: {txHash.hash}</p>
+          <p>Transaction Hash: {transaction.hash}</p>
         </Alert>
       )}
-      {txHash.confirmed && (
+      {transaction.confirmed && (
         <Alert
           variant="success"
           show={showAlert}
@@ -40,7 +40,7 @@ const TransactionResult = ({ txHash }) => {
           className="mt-3"
         >
           <Alert.Heading>Transaction mined successfully!</Alert.Heading>
-          <p>Transaction Hash: {txHash.hash}</p>
+          <p>Transaction Hash: {transaction.hash}</p>
         </Alert>
       )}
     </>
