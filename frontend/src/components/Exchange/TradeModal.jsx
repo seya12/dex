@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 
 import React from "react";
 
-const TradeModal = ({ closeModal, makeTrade, tokens, user }) => {
+const TradeModal = ({ closeModal, createTrade, tokens, user }) => {
   const ownedTokens = () => {
     return tokenOptions(true);
   };
@@ -22,6 +22,11 @@ const TradeModal = ({ closeModal, makeTrade, tokens, user }) => {
         {symbol}
       </option>
     ));
+  };
+
+  const makeTrade = (e) => {
+    e.preventDefault();
+    createTrade(e.target);
   };
 
   return (

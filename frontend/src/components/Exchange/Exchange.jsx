@@ -10,7 +10,11 @@ import { withTransactionResult } from "../withTransactionResult";
 import TradeModal from "./TradeModal";
 import Trades from "./Trades";
 
-const BasicExchange = ({ transaction, setTransaction }) => {
+const BasicExchange = ({
+  transaction,
+  setTransaction,
+  executeContractCall,
+}) => {
   /*
   TODO: Listen for Events: Transfer and Approval. Maybe add an annotation that an event was fired
   */
@@ -48,7 +52,7 @@ const BasicExchange = ({ transaction, setTransaction }) => {
       {showModal && (
         <TradeModal
           closeModal={() => setShowModal(false)}
-          makeTrade={makeTrade}
+          createTrade={createTrade}
           tokens={tokens}
           user={user}
         />

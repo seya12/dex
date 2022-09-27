@@ -3,11 +3,10 @@ import Form from "react-bootstrap/Form";
 import { utils } from "ethers";
 import { useState, useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
-import { executeContractCall } from "../../proxies/executeContractCall";
 import { withTransactionResult } from "../withTransactionResult";
 
-const BasicSend = ({ setTransaction }) => {
-  const { etherProvider, signer, user } = useContext(ApplicationContext);
+const BasicSend = ({ executeContractCall }) => {
+  const { signer, user } = useContext(ApplicationContext);
   const [isAmountNegative, setIsAmountNegative] = useState(false);
 
   const sendEther = async (event) => {
@@ -27,7 +26,7 @@ const BasicSend = ({ setTransaction }) => {
     };
 
     const contractCall = () => signer.sendTransaction(tx);
-    await executeContractCall(contractCall, etherProvider, setTransaction);
+    await executeContractCall(contractCall);
 
     setIsAmountNegative(false);
     event.target.reset();

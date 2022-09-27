@@ -1,38 +1,57 @@
+import { useContext } from "react";
 import { useState } from "react";
+import { ApplicationContext } from "../../ApplicationContext";
 
 /*
 TODO: manage multiple transactions
 */
 
 export function useTransactions() {
-  const [transaction, setTransaction] = useState([
-    {
-      hash: "",
-      waiting: false,
-      confirmed: false,
-      error: false,
-      visible: true,
-      get key() {
-        return this.hash + this.waiting + this.confirmed + this.error;
-      },
-    },
-  ]);
+  const { etherProvider } = useContext(ApplicationContext);
+  const defaultTransaction = {
+    hash: "",
+    waiting: false,
+    confirmed: false,
+    error: false,
+    visible: true,
+  };
+
+  const [transaction, setTransaction] = useState({ ...defaultTransaction });
+
   const transactionKey =
     transaction.hash +
     transaction.waiting +
     transaction.confirmed +
     transaction.error;
 
-  const modifyTransactions = (trans) => {
-    const newTransactions = [...transaction];
-    const index = newTransactions.findIndex(({ hash }) => hash === trans.hash);
-    if (index === -1) {
-      newTransactions.push(trans);
-    } else {
-      newTransactions[index] = trans;
+  const executeContractCall = async (contractCall) => {
+    let trans;
+    try {
+      trans = await contractCall();
+    } catch (err) {
+      setTransaction({
+        ...defaultTransaction,
+        error: true,
+      });
+      console.log(err.message);
+      return;
     }
-    setTransaction(newTransactions);
+    setTransaction({
+      ...defaultTransaction,
+      hash: trans.hash,
+      waiting: true,
+    });
+
+    await etherProvider.waitForTransaction(trans.hash);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setTransaction({
+      ...transaction,
+      hash: trans.hash,
+      waiting: false,
+      confirmed: true,
+    });
   };
 
-  return { transaction, setTransaction, transactionKey, modifyTransactions };
+  return { transaction, transactionKey, setTransaction, executeContractCall };
 }

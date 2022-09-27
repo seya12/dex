@@ -41,16 +41,16 @@ export function useToken(address, setTransaction) {
   */
 
   const approveTradesContract = async (tokenAddress, value) => {
+    console.log("in approve");
     const signerContract = new ethers.Contract(
       tokenAddress,
       TokenAbi.abi,
       signer
     );
 
-    const contractCall = () =>
-      signerContract.approve(contractAddresses["Trades"], value);
+    await signerContract.approve(contractAddresses["Trades"], value);
 
-    await executeContractCall(contractCall, etherProvider, setTransaction);
+    // await executeContractCall(contractCall, etherProvider, setTransaction);
   };
 
   return { tokenContract, balance, approveTradesContract };

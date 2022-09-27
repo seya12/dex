@@ -9,7 +9,7 @@ import { useToken } from "./useToken";
 export function useTrades(setTransaction) {
   const { etherProvider, signer } = useContext(ApplicationContext);
 
-  const { approveTradesContract } = useToken("");
+  const { approveTradesContract } = useToken("", setTransaction);
   const [tradesContract, setTradesContract] = useState();
   const [trades, setTrades] = useState([
     {
@@ -67,6 +67,11 @@ export function useTrades(setTransaction) {
      - T2: transfer(User A, amount)
 
     */
+
+    await approveTradesContract(
+      params.offerToken.value,
+      params.offerAmount.value
+    );
 
     const signerContract = new ethers.Contract(
       contractAddresses["Trades"],
