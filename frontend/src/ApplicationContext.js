@@ -18,7 +18,18 @@ export const ContextProvider = ({ children }) => {
       if (!window.ethereum) {
         return;
       }
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      provider.on("network", (newNetwork, oldNetwork) => {
+        if (oldNetwork) {
+          window.location.reload();
+        }
+      });
+      window.ethereum.on("accountsChanged", () => {
+        window.location.reload();
+      });
       setEtherProvider(provider);
     };
 
