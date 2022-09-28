@@ -29,7 +29,7 @@ export function useTransactions() {
         error: true,
       });
       console.log(err.message);
-      return;
+      return false;
     }
 
     setTransaction({
@@ -46,6 +46,7 @@ export function useTransactions() {
       hash: trans.hash,
       confirmed: true,
     });
+    return true;
   };
 
   return { transaction, transactionKey, setTransaction, executeContractCall };

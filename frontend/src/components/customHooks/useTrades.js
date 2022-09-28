@@ -54,16 +54,14 @@ export function useTrades(executeContractCall) {
   }, [fetchTrades]);
 
   const createTrade = async (params) => {
-    await approveTradesContract(
+    const result = await approveTradesContract(
       params.offerToken.value,
       params.offerAmount.value
     );
-
-    const signerContract = new ethers.Contract(
-      contractAddresses["Trades"],
-      TradesAbi.abi,
-      signer
-    );
+    if (!result) {
+      return;
+    }
+    const signerContract = createSignerContract();
     const contractCall = () =>
       signerContract.addTrade(
         params.offerToken.value,
@@ -76,13 +74,23 @@ export function useTrades(executeContractCall) {
     fetchTrades();
   };
 
-  const takeTrade = async (trade) => {
-    await approveTradesContract(trade.buyer.tokenAddress, trade.buyer.amount);
-    const signerContract = new ethers.Contract(
+  const createSignerContract = () => {
+    return new ethers.Contract(
       contractAddresses["Trades"],
       TradesAbi.abi,
       signer
     );
+  };
+
+  const takeTrade = async (trade) => {
+    const result = await approveTradesContract(
+      trade.buyer.tokenAddress,
+      trade.buyer.amount
+    );
+    if (!result) {
+      return;
+    }
+    const signerContract = createSignerContract();
     const contractCall = () => signerContract.swap(trade.id);
 
     await executeContractCall(contractCall);
