@@ -18,6 +18,7 @@ contract Trades {
         bool open;
         uint id;
     }
+    event Swap(address indexed seller, address indexed buyer);
 
     Trade[] public trades;
     uint tradesCounter;
@@ -68,7 +69,7 @@ contract Trades {
             t.seller.participant,
             t.buyer.amount
         );
-
+        emit Swap(t.seller.participant, t.buyer.participant);
         return true;
     }
 

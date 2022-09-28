@@ -42,6 +42,20 @@ export function useTrades(executeContractCall) {
     );
   }, [etherProvider]);
 
+  useEffect(() => {
+    if (!tradesContract) {
+      return;
+    }
+    console.log("adding listener");
+    tradesContract.on("Swap", () => {
+      console.log("success");
+    });
+    return () => {
+      console.log("cleanup");
+      tradesContract.removeAllListeners();
+    };
+  });
+
   const fetchTrades = useCallback(async () => {
     if (!etherProvider || !tradesContract) {
       return;
