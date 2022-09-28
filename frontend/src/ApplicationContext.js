@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { createContext } from "react";
 import { ethers } from "ethers";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const ApplicationContext = createContext();
 

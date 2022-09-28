@@ -1,7 +1,7 @@
+import { utils } from "ethers";
+import { useContext, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { utils } from "ethers";
-import { useState, useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import { withTransactionResult } from "../withTransactionResult";
 
@@ -55,7 +55,6 @@ const BasicSend = ({ executeContractCall }) => {
     </>
   );
 };
-
 const Send = withTransactionResult(BasicSend);
 
 export default Send;

@@ -1,9 +1,9 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Exchange from "./components/Exchange/Exchange";
 import NavigationBar from "./components/NavigationBar";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Overview/Home";
 import Send from "./components/Send/Send";
 import Token from "./components/Token/Token";
-import Exchange from "./components/Exchange/Exchange";
 
 const App = () => {
   return (

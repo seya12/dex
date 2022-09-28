@@ -1,8 +1,7 @@
+import { useContext, useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import InfoCard from "./InfoCard";
-import { useEffect, useState } from "react";
-import { useContext } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
+import InfoCard from "./InfoCard";
 
 const Home = () => {
   const { etherProvider, user } = useContext(ApplicationContext);

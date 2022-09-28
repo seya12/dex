@@ -1,5 +1,5 @@
-import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
+import Table from "react-bootstrap/Table";
 
 const Trades = ({ trades, takeTrade, user }) => {
   return (
