@@ -39,6 +39,7 @@ export const ContextProvider = ({ children }) => {
   const connect = async () => {
     if (signer) {
       setSigner(null);
+      setUser({ publicKey: "", balance: 0 });
       return;
     }
 
