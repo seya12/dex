@@ -1,10 +1,5 @@
-import { useContext } from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
-
-/*
-TODO: manage multiple transactions
-*/
 
 export function useTransactions() {
   const { etherProvider } = useContext(ApplicationContext);
@@ -36,6 +31,7 @@ export function useTransactions() {
       console.log(err.message);
       return;
     }
+
     setTransaction({
       ...defaultTransaction,
       hash: trans.hash,
@@ -46,9 +42,8 @@ export function useTransactions() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setTransaction({
-      ...transaction,
+      ...defaultTransaction,
       hash: trans.hash,
-      waiting: false,
       confirmed: true,
     });
   };

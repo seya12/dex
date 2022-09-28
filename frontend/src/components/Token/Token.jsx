@@ -6,10 +6,10 @@ import { withTransactionResult } from "../withTransactionResult";
 import CreateTokenModal from "./CreateTokenModal";
 import TokenOverview from "./TokenOverview";
 
-const BasicToken = ({ transaction, setTransaction }) => {
+const BasicToken = ({ transaction, executeContractCall }) => {
   const { signer } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
-  const { tokens, createToken } = useTokens(setTransaction);
+  const { tokens, createToken } = useTokens(executeContractCall);
 
   useEffect(() => {
     if (transaction.waiting || transaction.error) {

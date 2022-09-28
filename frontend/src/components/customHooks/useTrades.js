@@ -2,14 +2,13 @@ import { ethers } from "ethers";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import TradesAbi from "../../artifacts/contracts/Trades.sol/Trades.json";
-import { executeContractCall } from "../../proxies/executeContractCall";
 import contractAddresses from "../../resources/addresses.json";
 import { useToken } from "./useToken";
 
-export function useTrades(setTransaction) {
+export function useTrades(executeContractCall) {
   const { etherProvider, signer } = useContext(ApplicationContext);
 
-  const { approveTradesContract } = useToken("", setTransaction);
+  const { approveTradesContract } = useToken("", executeContractCall);
   const [tradesContract, setTradesContract] = useState();
   const [trades, setTrades] = useState([
     {
@@ -47,8 +46,7 @@ export function useTrades(setTransaction) {
     if (!etherProvider || !tradesContract) {
       return;
     }
-    const trades = await tradesContract.getTrades();
-    setTrades(trades);
+    setTrades(await tradesContract.getTrades());
   }, [etherProvider, tradesContract]);
 
   useEffect(() => {
@@ -56,18 +54,6 @@ export function useTrades(setTransaction) {
   }, [fetchTrades]);
 
   const createTrade = async (params) => {
-    /*
-    User A: Token T1
-    User B: Token T2
-
-    User A will amount1 T2 für amount2 T1
-    Trade wird erstellt. User A gibt Trades contract als allowance mit 10 T1
-    User B nimmt Trade an:
-     - T1: transferFrom(User A, User B, amount1)
-     - T2: transfer(User A, amount)
-
-    */
-
     await approveTradesContract(
       params.offerToken.value,
       params.offerAmount.value
@@ -86,13 +72,12 @@ export function useTrades(setTransaction) {
         params.forAmount.value
       );
 
-    await executeContractCall(contractCall, etherProvider, setTransaction);
+    await executeContractCall(contractCall);
     fetchTrades();
   };
 
   const takeTrade = async (trade) => {
     await approveTradesContract(trade.buyer.tokenAddress, trade.buyer.amount);
-
     const signerContract = new ethers.Contract(
       contractAddresses["Trades"],
       TradesAbi.abi,
@@ -100,7 +85,8 @@ export function useTrades(setTransaction) {
     );
     const contractCall = () => signerContract.swap(trade.id);
 
-    await executeContractCall(contractCall, etherProvider, setTransaction);
+    await executeContractCall(contractCall);
+    fetchTrades();
   };
 
   return { trades, createTrade, takeTrade };

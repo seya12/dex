@@ -1,19 +1,13 @@
-import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 
 import React from "react";
 
 const TradeModal = ({ closeModal, createTrade, tokens, user }) => {
-  const ownedTokens = () => {
-    return tokenOptions(true);
-  };
-  const allTokens = () => {
-    return tokenOptions(false);
-  };
-  const tokenOptions = (filtered) => {
+  const createTokenOptions = (isOnlyUserTokens) => {
     let tempTokens = tokens;
-    if (filtered) {
+    if (isOnlyUserTokens) {
       tempTokens = tokens?.filter((token) => token.owner === user.publicKey);
     }
 
@@ -22,6 +16,13 @@ const TradeModal = ({ closeModal, createTrade, tokens, user }) => {
         {symbol}
       </option>
     ));
+  };
+
+  const ownedTokens = () => {
+    return createTokenOptions(true);
+  };
+  const allTokens = () => {
+    return createTokenOptions(false);
   };
 
   const makeTrade = (e) => {

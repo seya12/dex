@@ -6,12 +6,10 @@ import Balances from "./Balances";
 function TokenOverview({ tokens, signer }) {
   const [showModal, setShowModal] = useState(false);
   const [address, setAddress] = useState(0);
-  const closeModal = () => setShowModal(false);
+
   const openModal = (event) => {
-    if (signer) {
-      setShowModal(true);
-      setAddress(event.target.value);
-    }
+    setAddress(event.target.value);
+    setShowModal(true);
   };
 
   return (
@@ -35,8 +33,9 @@ function TokenOverview({ tokens, signer }) {
                   <Button
                     className="p-1"
                     variant="link"
-                    onClick={(e) => openModal(e)}
+                    onClick={openModal}
                     value={token.address}
+                    disabled={!signer}
                   >
                     {token.name}
                   </Button>
@@ -50,7 +49,9 @@ function TokenOverview({ tokens, signer }) {
           })}
         </tbody>
       </Table>
-      {showModal && <Balances closeModal={closeModal} address={address} />}
+      {showModal && (
+        <Balances closeModal={() => setShowModal(false)} address={address} />
+      )}
     </>
   );
 }

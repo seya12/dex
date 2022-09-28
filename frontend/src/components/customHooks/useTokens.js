@@ -2,10 +2,9 @@ import { ethers } from "ethers";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
-import { executeContractCall } from "../../proxies/executeContractCall";
 import contractAddresses from "../../resources/addresses.json";
 
-export function useTokens(setTransaction) {
+export function useTokens(executeContractCall) {
   const { etherProvider, signer } = useContext(ApplicationContext);
 
   const [tokensContract, setTokensContract] = useState();
@@ -20,6 +19,20 @@ export function useTokens(setTransaction) {
     },
   ]);
 
+  useEffect(() => {
+    if (!etherProvider) {
+      return;
+    }
+    setTokensContract(
+      new ethers.Contract(
+        contractAddresses["Tokens"],
+        TokensAbi.abi,
+        etherProvider
+      )
+    );
+  }, [etherProvider]);
+
+  //function is used in effect and after token creation - therefore callback and not inside useEffect
   const fetchTokens = useCallback(async () => {
     if (!etherProvider || !tokensContract) {
       return;
@@ -40,19 +53,6 @@ export function useTokens(setTransaction) {
   }, [etherProvider, tokensContract]);
 
   useEffect(() => {
-    if (!etherProvider) {
-      return;
-    }
-    setTokensContract(
-      new ethers.Contract(
-        contractAddresses["Tokens"],
-        TokensAbi.abi,
-        etherProvider
-      )
-    );
-  }, [etherProvider]);
-
-  useEffect(() => {
     fetchTokens();
   }, [fetchTokens]);
 
@@ -70,7 +70,7 @@ export function useTokens(setTransaction) {
         params.decimals.value
       );
 
-    await executeContractCall(contractCall, etherProvider, setTransaction);
+    await executeContractCall(contractCall);
     fetchTokens();
   };
 
