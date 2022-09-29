@@ -1,4 +1,5 @@
 import Button from "react-bootstrap/Button";
+import Toast from "react-bootstrap/Toast";
 
 import { useContext, useEffect, useState } from "react";
 
@@ -16,7 +17,8 @@ const BasicExchange = ({ transaction, executeContractCall }) => {
   const { signer, user } = useContext(ApplicationContext);
   const [showModal, setShowModal] = useState(false);
   const { tokens } = useTokens(executeContractCall);
-  const { trades, createTrade, takeTrade } = useTrades(executeContractCall);
+  const { trades, createTrade, takeTrade, swapSuccess, setSwapSuccess } =
+    useTrades(executeContractCall);
 
   useEffect(() => {
     if (transaction.waiting || transaction.error) {
@@ -26,6 +28,14 @@ const BasicExchange = ({ transaction, executeContractCall }) => {
 
   return (
     <>
+      {swapSuccess && (
+        <Toast onClose={() => setSwapSuccess(false)}>
+          <Toast.Header>
+            <strong className="me-auto">Successfull Swap!</strong>
+          </Toast.Header>
+          <Toast.Body>Hello, world! This is a toast message.</Toast.Body>
+        </Toast>
+      )}
       <h1>Exchange</h1>
       <h2>Available Trades:</h2>
       <Trades trades={trades} takeTrade={takeTrade} user={user} />

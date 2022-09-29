@@ -10,6 +10,7 @@ export function useTrades(executeContractCall) {
 
   const { approveTradesContract } = useToken("", executeContractCall);
   const [tradesContract, setTradesContract] = useState();
+  const [swapSuccess, setSwapSuccess] = useState(false);
   const [trades, setTrades] = useState([
     {
       seller: {
@@ -46,12 +47,10 @@ export function useTrades(executeContractCall) {
     if (!tradesContract) {
       return;
     }
-    console.log("adding listener");
     tradesContract.on("Swap", () => {
-      console.log("success");
+      setSwapSuccess(true);
     });
     return () => {
-      console.log("cleanup");
       tradesContract.removeAllListeners();
     };
   });
@@ -111,5 +110,5 @@ export function useTrades(executeContractCall) {
     fetchTrades();
   };
 
-  return { trades, createTrade, takeTrade };
+  return { trades, createTrade, takeTrade, swapSuccess, setSwapSuccess };
 }

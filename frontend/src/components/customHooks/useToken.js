@@ -37,7 +37,8 @@ export function useToken(address, executeContractCall) {
 
     const contractCall = () =>
       signerContract.approve(contractAddresses["Trades"], value);
-    await executeContractCall(contractCall);
+    const result = await executeContractCall(contractCall);
+    return result;
   };
 
   return { tokenContract, balance, approveTradesContract };
