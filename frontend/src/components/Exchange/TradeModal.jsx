@@ -5,9 +5,9 @@ import Modal from "react-bootstrap/Modal";
 import React from "react";
 
 const TradeModal = ({ closeModal, createTrade, tokens, user }) => {
-  const createTokenOptions = (isOnlyUserTokens) => {
+  const createTokenOptions = (onlyShowUserTokens) => {
     let tempTokens = tokens;
-    if (isOnlyUserTokens) {
+    if (onlyShowUserTokens) {
       tempTokens = tokens?.filter((token) => token.owner === user.publicKey);
     }
 

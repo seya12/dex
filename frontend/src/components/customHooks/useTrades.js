@@ -5,6 +5,14 @@ import TradesAbi from "../../artifacts/contracts/Trades.sol/Trades.json";
 import contractAddresses from "../../resources/addresses.json";
 import { useToken } from "./useToken";
 
+/*
+custom hook which takes in the contract call wrapper
+it provides:
+- all trades fetched from the Trades smart contract
+- a function to create further trades
+- a function to take trades
+- a state variable which listens for successful trade events
+*/
 export function useTrades(executeContractCall) {
   const { etherProvider, signer } = useContext(ApplicationContext);
 

@@ -4,6 +4,13 @@ import { ApplicationContext } from "../../ApplicationContext";
 import TokenAbi from "../../artifacts/contracts/Token.sol/Token.json";
 import contractAddresses from "../../resources/addresses.json";
 
+/*
+custom hook which takes in an address and the contract call wrapper
+it provides:
+- the token contract
+- balance of the currently connected user
+- an approval function
+*/
 export function useToken(address, executeContractCall) {
   const { etherProvider, signer, user } = useContext(ApplicationContext);
   const [tokenContract, setTokenContract] = useState(null);

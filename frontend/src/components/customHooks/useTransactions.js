@@ -1,6 +1,14 @@
 import { useContext, useState } from "react";
 import { ApplicationContext } from "../../ApplicationContext";
 
+/*
+custom hook for transactions
+it provides:
+- the current transaction state variable + a setter
+- a unique key used for rendering
+- a wrapper for executing smart contract functions
+*/
+
 export function useTransactions() {
   const { etherProvider } = useContext(ApplicationContext);
   const defaultTransaction = {

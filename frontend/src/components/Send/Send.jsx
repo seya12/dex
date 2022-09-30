@@ -47,7 +47,7 @@ const BasicSend = ({ executeContractCall }) => {
             Number must greater than 0
           </Form.Control.Feedback>
         </Form.Group>
-        {!signer && <p>Please connect via the "Connect" button!</p>}
+        {!signer && <p>Please connect first to be able to send ETH.</p>}
         <Button type="submit" disabled={!signer}>
           Submit
         </Button>

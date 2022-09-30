@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
-const Trades = ({ trades, takeTrade, user }) => {
+const Trades = ({ trades, takeTrade, user, signer }) => {
   return (
     <Table striped bordered hover>
       <thead>
@@ -26,7 +26,9 @@ const Trades = ({ trades, takeTrade, user }) => {
                 <td>
                   <Button
                     onClick={() => takeTrade(trade)}
-                    disabled={trade.seller.participant === user.publicKey}
+                    disabled={
+                      !signer || trade.seller.participant === user.publicKey
+                    }
                     variant="dark"
                   >
                     Take Trade

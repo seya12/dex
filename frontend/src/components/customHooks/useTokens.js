@@ -4,6 +4,12 @@ import { ApplicationContext } from "../../ApplicationContext";
 import TokensAbi from "../../artifacts/contracts/Tokens.sol/Tokens.json";
 import contractAddresses from "../../resources/addresses.json";
 
+/*
+custom hook which takes in the contract call wrapper
+it provides:
+- all tokens fetched from the Tokens smart contract
+- a function to create further tokens
+*/
 export function useTokens(executeContractCall) {
   const { etherProvider, signer } = useContext(ApplicationContext);
 

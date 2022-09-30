@@ -25,7 +25,7 @@ const BasicToken = ({ transaction, executeContractCall }) => {
   return (
     <>
       <TokenOverview tokens={tokens} signer={signer} />
-      {!signer && <p>Please connect on the overview page!</p>}
+      {!signer && <p>Please connect first to be able to create new tokens.</p>}
       <Button disabled={!signer} onClick={() => setShowModal(true)}>
         Create new Token
       </Button>
