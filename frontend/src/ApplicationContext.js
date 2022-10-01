@@ -43,12 +43,24 @@ export const ContextProvider = ({ children }) => {
 
     const accounts = await etherProvider.send("eth_requestAccounts", []);
     setSigner(etherProvider.getSigner());
-    let balance = await etherProvider.getBalance(accounts[0]);
-    balance = ethers.utils.formatEther(balance);
+    let balance = getBalance(accounts[0]);
     setUser({
       publicKey: ethers.utils.getAddress(accounts[0]),
-      balance: balance.toString(),
+      balance: await balance,
     });
+  };
+
+  const getBalance = async (address) => {
+    let balance = await etherProvider.getBalance(address);
+    balance = ethers.utils.formatEther(balance);
+    return balance.toString();
+  };
+
+  const updateBalance = async () => {
+    let balance = await etherProvider.getBalance(user.publicKey);
+    balance = ethers.utils.formatEther(balance);
+
+    setUser({ ...user, balance: balance.toString() });
   };
 
   return (
@@ -58,6 +70,7 @@ export const ContextProvider = ({ children }) => {
         signer,
         user,
         connect,
+        updateBalance,
       }}
     >
       {children}

@@ -6,7 +6,7 @@ import { ApplicationContext } from "../../ApplicationContext";
 import { withTransactionResult } from "../withTransactionResult";
 
 const BasicSend = ({ executeContractCall }) => {
-  const { signer, user } = useContext(ApplicationContext);
+  const { signer, user, updateBalance } = useContext(ApplicationContext);
   const [isAmountNegative, setIsAmountNegative] = useState(false);
 
   const sendEther = async (event) => {
@@ -30,6 +30,7 @@ const BasicSend = ({ executeContractCall }) => {
 
     setIsAmountNegative(false);
     event.target.reset();
+    updateBalance();
   };
 
   return (
