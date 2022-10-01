@@ -34,7 +34,7 @@ const BasicSend = ({ executeContractCall }) => {
 
   return (
     <>
-      <h1>Send ETH</h1>
+      <h1 className="text-center">Send ETH</h1>
       <Form onSubmit={sendEther}>
         <Form.Group className="mb-3" controlId="receiver">
           <Form.Label>Receiver Public Key:</Form.Label>

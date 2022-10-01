@@ -14,7 +14,7 @@ function TokenOverview({ tokens, signer }) {
 
   return (
     <>
-      <h1>Latest Tokens</h1>
+      <h1 className="text-center">Latest Tokens</h1>
       <Table striped bordered hover>
         <thead className="text-center">
           <tr>

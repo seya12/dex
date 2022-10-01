@@ -37,7 +37,7 @@ const BasicExchange = ({ transaction, executeContractCall }) => {
           </Toast>
         </ToastContainer>
       )}
-      <h1>Exchange</h1>
+      <h1 className="text-center">Exchange</h1>
       <h2>Available Trades:</h2>
       <Trades
         trades={trades}
