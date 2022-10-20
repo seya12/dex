@@ -11,3 +11,8 @@ GAS_REPORT=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
+
+Following custom command deploys the Trades and Tokens contract plus some test data
+```shell
+npx hardhat init
+```
