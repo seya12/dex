@@ -1,18 +1,21 @@
-# Sample Hardhat Project
+# Hardhat project for DEX on Ethereum
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project is based on hardhat. It includes the necessary smart contracts and custom scripts for easier deployment.
 
-Try running some of the following tasks:
+Run following task to start a local blockchain network:
 
 ```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
 npx hardhat node
-npx hardhat run scripts/deploy.js
 ```
 
-Following custom command deploys the Trades and Tokens contract plus some test data
+Scripts can be executed with following task:
+
 ```shell
-npx hardhat init
+npx hardhat run scripts/deployTokens.js
+```
+
+Following custom command deploys the Trades and Tokens contract plus some test data. Please make sure that your local blockchain network is running before running the task.
+
+```shell
+npx hardhat init --network localhost
 ```
