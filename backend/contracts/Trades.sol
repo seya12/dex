@@ -52,24 +52,24 @@ contract Trades {
     function swap(uint index) public returns (bool) {
         require(trades[index].open == true, "Trade must be open");
 
-        Trade storage t = trades[index];
-        t.open = false;
-        t.buyer.participant = msg.sender;
+        Trade storage trade = trades[index];
+        trade.open = false;
+        trade.buyer.participant = msg.sender;
 
-        Token seller = Token(t.seller.tokenAddress);
-        Token buyer = Token(t.buyer.tokenAddress);
+        Token seller = Token(trade.seller.tokenAddress);
+        Token buyer = Token(trade.buyer.tokenAddress);
 
         seller.transferFrom(
-            t.seller.participant,
-            t.buyer.participant,
-            t.seller.amount
+            trade.seller.participant,
+            trade.buyer.participant,
+            trade.seller.amount
         );
         buyer.transferFrom(
-            t.buyer.participant,
-            t.seller.participant,
-            t.buyer.amount
+            trade.buyer.participant,
+            trade.seller.participant,
+            trade.buyer.amount
         );
-        emit Swap(t.seller.participant, t.buyer.participant);
+        emit Swap(trade.seller.participant, trade.buyer.participant);
         return true;
     }
 
