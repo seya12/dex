@@ -5,3 +5,5 @@ The application provides following functionality:
 * Send ether to other user
 * Create your own ERC-20 token
 * Trade your ERC-20 token with other users
+
+![Start screen of DEX](/imgs/overview.png "Overview page")
